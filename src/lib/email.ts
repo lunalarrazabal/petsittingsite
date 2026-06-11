@@ -4,8 +4,13 @@
 import { Resend } from 'resend';
 
 // The Resend client reads your secret API key from the .env.local file.
-// It's undefined here until you add your key — see SETUP INSTRUCTIONS below.
-export const resend = new Resend(process.env.RESEND_API_KEY);
+// The `new Resend()` constructor throws synchronously if it's given an empty
+// key, which would crash this module at import time (and break `next build`,
+// which loads API route modules to collect their config) whenever
+// RESEND_API_KEY isn't set. Falling back to a placeholder keeps the module
+// loadable; an actual send attempt without a real key will fail gracefully
+// and is caught by the try/catch in the API routes.
+export const resend = new Resend(process.env.RESEND_API_KEY || 're_missing_api_key');
 
 // The email address that will RECEIVE all contact & booking messages.
 export const OWNER_EMAIL = 'lunnalarrazabal@gmail.com';

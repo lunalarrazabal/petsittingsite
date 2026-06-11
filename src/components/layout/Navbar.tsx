@@ -24,10 +24,14 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close the mobile menu whenever the route changes
-  useEffect(() => {
+  // Close the mobile menu whenever the route changes.
+  // Adjusted during render (not in an effect) to avoid an extra
+  // post-commit render pass — see https://react.dev/learn/you-might-not-need-an-effect
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   const links = [
     { href: '/', label: t.nav.home },
