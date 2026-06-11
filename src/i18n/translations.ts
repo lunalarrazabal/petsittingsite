@@ -331,4 +331,15 @@ export const translations = {
   },
 } as const;
 
-export type Translations = typeof translations.en;
+// Widens the literal types inferred from `as const` (e.g. 'Home') to their
+// base types (e.g. string) while preserving structure, so that both the en
+// and fr translation objects satisfy the same Translations type.
+type Widen<T> = T extends string
+  ? string
+  : T extends readonly (infer U)[]
+    ? readonly Widen<U>[]
+    : T extends object
+      ? { readonly [K in keyof T]: Widen<T[K]> }
+      : T;
+
+export type Translations = Widen<typeof translations.en>;

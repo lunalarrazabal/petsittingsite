@@ -20,6 +20,8 @@ interface FormData {
   honeypot: string;
 }
 
+type FormErrors = Partial<Record<keyof FormData | 'photo', string>>;
+
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
 export default function BookingForm() {
@@ -38,7 +40,7 @@ export default function BookingForm() {
     instructions: '',
     honeypot: '',
   });
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<Status>('idle');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -64,7 +66,7 @@ export default function BookingForm() {
   };
 
   const validate = (): boolean => {
-    const e: Partial<Record<keyof FormData, string>> = {};
+    const e: FormErrors = {};
     if (!form.name.trim()) e.name = b.nameRequired;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = b.emailRequired;
     if (!form.phone.trim()) e.phone = b.phoneRequired;
