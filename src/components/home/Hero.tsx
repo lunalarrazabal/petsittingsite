@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useLanguage } from '@/i18n/LanguageContext';
 import Button from '@/components/ui/Button';
 
@@ -82,8 +83,15 @@ export default function Hero() {
             {/* Main card */}
             <div className="rounded-3xl bg-white p-6 shadow-xl ring-1 ring-stone-100">
               {/* Avatar */}
-              <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-rose-100 text-6xl shadow-inner">
-                🐾
+              <div className="mx-auto h-28 w-28 overflow-hidden rounded-full shadow-inner ring-4 ring-rose-50">
+                <Image
+                  src="/images/profile/profile-hero.webp"
+                  alt="Luna Larrazabal, professional pet sitter in Montreal"
+                  width={112}
+                  height={112}
+                  className="h-full w-full object-cover"
+                  priority
+                />
               </div>
 
               {/* Name + title */}
@@ -129,19 +137,31 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Floating emoji decorations */}
-            <span
-              className="absolute -right-4 -top-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-2xl shadow-md"
+            {/* Floating photo decorations */}
+            <div
+              className="absolute -right-4 -top-4 h-14 w-14 overflow-hidden rounded-full shadow-md ring-4 ring-white"
               aria-hidden="true"
             >
-              🐶
-            </span>
-            <span
-              className="absolute -bottom-4 -left-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-2xl shadow-md"
+              <Image
+                src="/images/gallery/gallery-09.webp"
+                alt=""
+                width={56}
+                height={56}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div
+              className="absolute -bottom-4 -left-4 h-14 w-14 overflow-hidden rounded-full shadow-md ring-4 ring-white"
               aria-hidden="true"
             >
-              🐱
-            </span>
+              <Image
+                src="/images/gallery/gallery-17.webp"
+                alt=""
+                width={56}
+                height={56}
+                className="h-full w-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>

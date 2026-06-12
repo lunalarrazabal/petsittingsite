@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useLanguage } from '@/i18n/LanguageContext';
 import Button from '@/components/ui/Button';
 
@@ -10,14 +11,17 @@ export default function ProfileSection() {
   return (
     <section className="bg-white py-20">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-        {/* Left column: decorative card with photo placeholder */}
+        {/* Left column: profile photo */}
         <div className="flex justify-center lg:justify-end">
           <div className="relative">
-            <div className="h-72 w-72 overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 to-amber-100 sm:h-80 sm:w-80">
-              {/* Profile photo placeholder — replace with <Image> when you have a photo */}
-              <div className="flex h-full items-center justify-center text-8xl">
-                🐾
-              </div>
+            <div className="h-72 w-72 overflow-hidden rounded-3xl shadow-xl ring-1 ring-stone-100 sm:h-80 sm:w-80">
+              <Image
+                src="/images/profile/profile-about.webp"
+                alt="Luna Larrazabal holding a fluffy Samoyed dog"
+                width={320}
+                height={320}
+                className="h-full w-full object-cover"
+              />
             </div>
 
             {/* Floating experience badge */}

@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: 'Montreal Pet Care | Professional Pet Sitting',
     description:
       'Loving, reliable pet care in Montreal. Dog walking, overnight sitting, boarding & more.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Montreal Pet Care' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Montreal Pet Care' }],
   },
   twitter: {
     card: 'summary_large_image',
