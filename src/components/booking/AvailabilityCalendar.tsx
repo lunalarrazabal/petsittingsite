@@ -55,11 +55,11 @@ export default function AvailabilityCalendar({
   return (
     <div
       className={`rounded-2xl bg-white p-4 shadow-sm ring-1 ${
-        error ? 'ring-red-300' : 'ring-stone-100'
+        error ? 'ring-red-300' : 'ring-slate-100'
       }`}
     >
-      <h3 className="font-semibold text-stone-900">{b.calendarTitle}</h3>
-      <p className="mt-0.5 text-xs text-stone-400">{b.calendarSubtitle}</p>
+      <h3 className="font-semibold text-slate-900">{b.calendarTitle}</h3>
+      <p className="mt-0.5 text-xs text-slate-400">{b.calendarSubtitle}</p>
 
       {/* Month navigation */}
       <div className="mt-4 flex items-center justify-between">
@@ -68,12 +68,12 @@ export default function AvailabilityCalendar({
           onClick={prevMonth}
           disabled={!canGoPrev}
           aria-label={b.prevMonth}
-          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
         >
           ‹
         </button>
 
-        <p className="text-sm font-semibold text-stone-800">
+        <p className="text-sm font-semibold text-slate-800">
           {t.months[viewMonth]} {viewYear}
         </p>
 
@@ -81,7 +81,7 @@ export default function AvailabilityCalendar({
           type="button"
           onClick={nextMonth}
           aria-label={b.nextMonth}
-          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-stone-100"
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-slate-100"
         >
           ›
         </button>
@@ -90,7 +90,7 @@ export default function AvailabilityCalendar({
       {/* Day-of-week headers */}
       <div className="mt-3 grid grid-cols-7 text-center">
         {t.days.map((day) => (
-          <div key={day} className="py-1 text-xs font-medium text-stone-400">
+          <div key={day} className="py-1 text-xs font-medium text-slate-400">
             {day}
           </div>
         ))}
@@ -119,16 +119,16 @@ export default function AvailabilityCalendar({
             'relative mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm transition-all duration-150 ';
 
           if (isSelected) {
-            cellClass += 'bg-rose-600 text-white font-bold shadow-md';
+            cellClass += 'bg-blue-600 text-white font-bold shadow-md';
           } else if (isDisabled) {
-            cellClass += 'cursor-not-allowed text-stone-300 ';
+            cellClass += 'cursor-not-allowed text-slate-300 ';
             if (isBlocked) cellClass += 'bg-red-50 line-through';
           } else if (isToday) {
             cellClass +=
-              'font-bold text-rose-600 ring-2 ring-rose-300 hover:bg-rose-50 cursor-pointer';
+              'font-bold text-blue-600 ring-2 ring-blue-300 hover:bg-blue-50 cursor-pointer';
           } else {
             cellClass +=
-              'cursor-pointer text-stone-700 hover:bg-rose-50 hover:text-rose-700';
+              'cursor-pointer text-slate-700 hover:bg-blue-50 hover:text-blue-700';
           }
 
           return (
@@ -144,7 +144,7 @@ export default function AvailabilityCalendar({
                 {dayNum}
                 {/* Dot below today's date */}
                 {isToday && !isSelected && (
-                  <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-rose-500" />
+                  <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-blue-500" />
                 )}
               </button>
             </div>
@@ -153,9 +153,9 @@ export default function AvailabilityCalendar({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap gap-3 border-t border-stone-100 pt-3 text-xs text-stone-500">
+      <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-100 pt-3 text-xs text-slate-500">
         <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full bg-rose-600" /> {b.selected}
+          <span className="h-3 w-3 rounded-full bg-blue-600" /> {b.selected}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded-full bg-red-100 ring-1 ring-red-200" /> {b.unavailable}

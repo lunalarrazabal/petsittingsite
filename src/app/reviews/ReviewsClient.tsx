@@ -16,17 +16,17 @@ export default function ReviewsClient() {
     <div className="py-16 sm:py-20">
       {/* Page header */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <span className="rounded-full bg-amber-100 px-4 py-1 text-sm font-medium text-amber-700">
+        <span className="rounded-full bg-brand-100 px-4 py-1 text-sm font-medium text-brand-700">
           {r.badge}
         </span>
-        <h1 className="mt-4 font-[var(--font-playfair)] text-4xl font-bold text-stone-900 sm:text-5xl">
+        <h1 className="mt-4 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
           {r.title}
         </h1>
-        <p className="mt-4 text-lg text-stone-500">{r.subtitle}</p>
+        <p className="mt-4 text-lg text-slate-500">{r.subtitle}</p>
 
         {/* Overall rating summary */}
-        <div className="mx-auto mt-8 flex w-fit items-center gap-4 rounded-2xl bg-amber-50 px-8 py-4 ring-1 ring-amber-100">
-          <p className="text-5xl font-extrabold text-amber-500">
+        <div className="mx-auto mt-8 flex w-fit items-center gap-4 rounded-2xl bg-brand-50 px-8 py-4 ring-1 ring-brand-100">
+          <p className="text-5xl font-extrabold text-brand-600">
             {averageRating.toFixed(1)}
           </p>
           <div className="text-left">
@@ -36,8 +36,8 @@ export default function ReviewsClient() {
                   key={i}
                   className={`text-xl ${
                     i < Math.round(averageRating)
-                      ? 'text-amber-400'
-                      : 'text-stone-200'
+                      ? 'text-brand-600'
+                      : 'text-slate-200'
                   }`}
                   aria-hidden="true"
                 >
@@ -45,7 +45,7 @@ export default function ReviewsClient() {
                 </span>
               ))}
             </div>
-            <p className="mt-0.5 text-sm text-stone-500">
+            <p className="mt-0.5 text-sm text-slate-500">
               Based on {reviews.length} reviews
             </p>
           </div>
@@ -61,12 +61,12 @@ export default function ReviewsClient() {
 
       {/* CTA to leave a review */}
       <div className="mx-auto mt-16 max-w-2xl px-4 text-center sm:px-6">
-        <div className="rounded-3xl bg-stone-100 px-8 py-10">
+        <div className="rounded-3xl bg-slate-100 px-8 py-10">
           <p className="text-2xl">⭐</p>
-          <h2 className="mt-2 font-[var(--font-playfair)] text-2xl font-bold text-stone-900">
+          <h2 className="mt-2 font-[var(--font-playfair)] text-2xl font-bold text-slate-900">
             Had a great experience?
           </h2>
-          <p className="mt-2 text-stone-500">
+          <p className="mt-2 text-slate-500">
             I&apos;d love to hear from you! Your feedback helps other pet families find trusted care.
           </p>
           <div className="mt-6">

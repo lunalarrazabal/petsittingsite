@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 // A reusable Button component.
-// Use variant="primary" for the main rose-colored button.
+// Use variant="primary" for the main blue-colored button.
 // Use variant="outline" for a transparent button with a border.
 // Pass href to render it as a link instead of a button.
 
@@ -18,13 +18,13 @@ interface ButtonProps {
 }
 
 const base =
-  'inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed';
+  'inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed';
 
 const variants = {
-  primary: 'bg-rose-600 text-white hover:bg-rose-700 shadow-sm hover:shadow-md active:scale-[0.98]',
+  primary: 'bg-blue-600 text-white hover:bg-blue-800 shadow-sm hover:shadow-md active:scale-[0.98]',
   outline:
-    'border-2 border-rose-600 text-rose-600 hover:bg-rose-50 active:scale-[0.98]',
-  ghost: 'text-stone-700 hover:bg-stone-100 active:scale-[0.98]',
+    'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 active:scale-[0.98]',
+  ghost: 'text-slate-700 hover:bg-slate-100 active:scale-[0.98]',
 };
 
 const sizes = {

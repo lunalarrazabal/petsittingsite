@@ -99,20 +99,20 @@ export default function BookingForm() {
   };
 
   const inputClass = (field: keyof FormData) =>
-    `w-full rounded-xl border px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-500 transition ${
+    `w-full rounded-xl border px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
       errors[field]
         ? 'border-red-400 bg-red-50'
-        : 'border-stone-200 bg-white hover:border-stone-300'
+        : 'border-slate-200 bg-white hover:border-slate-300'
     }`;
 
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-8 py-14 text-center ring-1 ring-emerald-100">
         <span className="text-6xl" aria-hidden="true">🎉</span>
-        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-stone-900">
+        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-slate-900">
           {b.successTitle}
         </h3>
-        <p className="mt-2 max-w-sm text-stone-500">{b.successText}</p>
+        <p className="mt-2 max-w-sm text-slate-500">{b.successText}</p>
         <button
           onClick={() => {
             setStatus('idle');
@@ -120,7 +120,7 @@ export default function BookingForm() {
             setPhotoFile(null);
             setPhotoPreview(null);
           }}
-          className="mt-6 text-sm font-medium text-rose-600 hover:underline"
+          className="mt-6 text-sm font-medium text-brand-600 hover:underline"
         >
           Submit another request
         </button>
@@ -152,7 +152,7 @@ export default function BookingForm() {
       {/* Two-column grid for name / email */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="bk-name" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="bk-name" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formName} *
           </label>
           <input
@@ -168,7 +168,7 @@ export default function BookingForm() {
         </div>
 
         <div>
-          <label htmlFor="bk-email" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="bk-email" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formEmail} *
           </label>
           <input
@@ -186,7 +186,7 @@ export default function BookingForm() {
 
       {/* Phone */}
       <div>
-        <label htmlFor="bk-phone" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="bk-phone" className="mb-1 block text-sm font-medium text-slate-700">
           {b.formPhone} *
         </label>
         <input
@@ -204,7 +204,7 @@ export default function BookingForm() {
       {/* Pet name / Pet type */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="bk-pet-name" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="bk-pet-name" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formPetName} *
           </label>
           <input
@@ -219,7 +219,7 @@ export default function BookingForm() {
         </div>
 
         <div>
-          <label htmlFor="bk-pet-type" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="bk-pet-type" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formPetType} *
           </label>
           <select
@@ -239,7 +239,7 @@ export default function BookingForm() {
 
       {/* Service selection */}
       <div>
-        <label htmlFor="bk-service" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="bk-service" className="mb-1 block text-sm font-medium text-slate-700">
           {b.formService} *
         </label>
         <select
@@ -259,9 +259,9 @@ export default function BookingForm() {
       </div>
 
       {/* End date — only shown for multi-day services */}
-      {['overnight-sitting', 'boarding'].includes(form.service) && (
+      {['boarding'].includes(form.service) && (
         <div>
-          <label htmlFor="bk-end-date" className="mb-1 block text-sm font-medium text-stone-700">
+          <label htmlFor="bk-end-date" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formEndDate}
           </label>
           <input
@@ -277,7 +277,7 @@ export default function BookingForm() {
 
       {/* Special instructions */}
       <div>
-        <label htmlFor="bk-instructions" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="bk-instructions" className="mb-1 block text-sm font-medium text-slate-700">
           {b.formInstructions}
         </label>
         <textarea
@@ -292,10 +292,10 @@ export default function BookingForm() {
 
       {/* Pet photo upload */}
       <div>
-        <label className="mb-1 block text-sm font-medium text-stone-700">
+        <label className="mb-1 block text-sm font-medium text-slate-700">
           {b.formPhoto}
         </label>
-        <p className="mb-2 text-xs text-stone-400">{b.formPhotoHint}</p>
+        <p className="mb-2 text-xs text-slate-400">{b.formPhotoHint}</p>
 
         {photoPreview ? (
           <div className="flex items-center gap-4">
@@ -310,7 +310,7 @@ export default function BookingForm() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="text-sm font-medium text-rose-600 hover:underline"
+              className="text-sm font-medium text-brand-600 hover:underline"
             >
               {b.formPhotoChange}
             </button>
@@ -319,7 +319,7 @@ export default function BookingForm() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-stone-200 px-4 py-6 text-sm text-stone-400 transition-colors hover:border-rose-300 hover:text-rose-500"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-200 px-4 py-6 text-sm text-slate-400 transition-colors hover:border-brand-300 hover:text-brand-600"
           >
             <span className="text-xl" aria-hidden="true">📷</span>
             Click to upload a photo of your pet

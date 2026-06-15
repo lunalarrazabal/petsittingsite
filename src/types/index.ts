@@ -17,11 +17,15 @@ export interface Service {
 export interface Review {
   id: string;
   name: string;
-  pet: string;
+  pet?: string;
   rating: number;
+  serviceEn?: string;
+  serviceFr?: string;
   textEn: string;
   textFr: string;
   date: string;
+  replyEn?: string;
+  replyFr?: string;
 }
 
 export interface GalleryPhoto {

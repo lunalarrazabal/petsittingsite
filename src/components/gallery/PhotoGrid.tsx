@@ -37,7 +37,7 @@ function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/90 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -116,7 +116,7 @@ export default function PhotoGrid() {
             <button
               key={photo.id}
               onClick={() => setActiveIndex(index)}
-              className="group mb-4 block w-full overflow-hidden rounded-2xl shadow-sm ring-1 ring-stone-100 transition-shadow duration-200 hover:shadow-lg focus-visible:outline-rose-500"
+              className="group mb-4 block w-full overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-100 transition-shadow duration-200 hover:shadow-lg focus-visible:outline-blue-500"
               aria-label={`View larger: ${alt}`}
             >
               <Image

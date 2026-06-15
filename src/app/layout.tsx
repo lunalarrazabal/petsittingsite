@@ -67,7 +67,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="min-h-screen flex flex-col bg-stone-50 font-[var(--font-inter)] antialiased">
+      <body className="min-h-screen flex flex-col bg-slate-50 font-[var(--font-inter)] antialiased">
         {/* Providers gives every component access to the language switcher */}
         <Providers>
           <Navbar />

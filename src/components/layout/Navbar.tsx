@@ -47,16 +47,16 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 bg-white transition-shadow duration-200 ${
-        scrolled ? 'shadow-md' : 'border-b border-stone-100'
+        scrolled ? 'shadow-md' : 'border-b border-slate-100'
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         {/* Logo / Business Name */}
-        <Link href="/" className="flex items-center gap-2 text-stone-900">
+        <Link href="/" className="flex items-center gap-2 text-slate-900">
           <span className="text-2xl" aria-hidden="true">🐾</span>
           <span className="font-[var(--font-playfair)] text-lg font-bold leading-tight">
             Montreal<br className="hidden" />
-            <span className="text-rose-600"> Pet Care</span>
+            <span className="text-brand-600"> Pet Care</span>
           </span>
         </Link>
 
@@ -68,8 +68,8 @@ export default function Navbar() {
                 href={href}
                 className={`text-sm font-medium transition-colors ${
                   isActive(href)
-                    ? 'text-rose-600'
-                    : 'text-stone-600 hover:text-stone-900'
+                    ? 'text-brand-600'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {label}
@@ -83,7 +83,7 @@ export default function Navbar() {
           {/* EN / FR language toggle */}
           <button
             onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
-            className="rounded-full border border-stone-200 px-3 py-1 text-xs font-semibold text-stone-600 transition-colors hover:border-rose-300 hover:text-rose-600"
+            className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition-colors hover:border-brand-300 hover:text-brand-600"
             aria-label={`Switch to ${language === 'en' ? 'French' : 'English'}`}
           >
             {language === 'en' ? 'FR' : 'EN'}
@@ -92,7 +92,7 @@ export default function Navbar() {
           {/* Book Now button — desktop only */}
           <Link
             href="/booking"
-            className="hidden rounded-full bg-rose-600 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-rose-700 md:block"
+            className="hidden rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-800 md:block"
           >
             {t.nav.bookNow}
           </Link>
@@ -105,17 +105,17 @@ export default function Navbar() {
             aria-expanded={menuOpen}
           >
             <span
-              className={`block h-0.5 w-5 bg-stone-700 transition-transform duration-200 ${
+              className={`block h-0.5 w-5 bg-slate-700 transition-transform duration-200 ${
                 menuOpen ? 'translate-y-2 rotate-45' : ''
               }`}
             />
             <span
-              className={`block h-0.5 w-5 bg-stone-700 transition-opacity duration-200 ${
+              className={`block h-0.5 w-5 bg-slate-700 transition-opacity duration-200 ${
                 menuOpen ? 'opacity-0' : ''
               }`}
             />
             <span
-              className={`block h-0.5 w-5 bg-stone-700 transition-transform duration-200 ${
+              className={`block h-0.5 w-5 bg-slate-700 transition-transform duration-200 ${
                 menuOpen ? '-translate-y-2 -rotate-45' : ''
               }`}
             />
@@ -125,16 +125,16 @@ export default function Navbar() {
 
       {/* Mobile dropdown menu */}
       {menuOpen && (
-        <div className="border-t border-stone-100 bg-white md:hidden">
-          <ul className="flex flex-col divide-y divide-stone-100">
+        <div className="border-t border-slate-100 bg-white md:hidden">
+          <ul className="flex flex-col divide-y divide-slate-100">
             {links.map(({ href, label }) => (
               <li key={href}>
                 <Link
                   href={href}
                   className={`block px-6 py-3.5 text-sm font-medium transition-colors ${
                     isActive(href)
-                      ? 'text-rose-600 bg-rose-50'
-                      : 'text-stone-700 hover:bg-stone-50'
+                      ? 'text-brand-600 bg-brand-50'
+                      : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   {label}
@@ -144,7 +144,7 @@ export default function Navbar() {
             <li>
               <Link
                 href="/booking"
-                className="block bg-rose-600 px-6 py-3.5 text-sm font-semibold text-white hover:bg-rose-700"
+                className="block bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white hover:bg-blue-800"
               >
                 {t.nav.bookNow}
               </Link>

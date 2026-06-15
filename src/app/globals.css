@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 /* Custom CSS variables for the brand color palette.
-   Rose = warm, caring, professional. Amber = warmth, stars, highlights. */
+   Brand = soft emerald accent (#118855). Blue = primary actions/buttons. */
 @theme {
-  --color-brand-50: #fff1f0;
-  --color-brand-100: #ffe1de;
-  --color-brand-200: #ffc8c2;
-  --color-brand-400: #f87060;
-  --color-brand-500: #e95c4b;
-  --color-brand-600: #d44535;
-  --color-brand-700: #b33326;
+  --color-brand-50: #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-300: #86efac;
+  --color-brand-400: #4ade80;
+  --color-brand-500: #22c55e;
+  --color-brand-600: #118855;
+  --color-brand-700: #0d6b43;
+  --color-brand-800: #0a4f33;
+  --color-brand-900: #073825;
   --font-display: var(--font-playfair);
   --font-sans: var(--font-inter);
 }
@@ -21,7 +24,7 @@ html {
 
 /* Remove the default focus outline and replace with a branded one */
 :focus-visible {
-  outline: 2px solid #e95c4b;
+  outline: 2px solid #2563eb;
   outline-offset: 2px;
   border-radius: 4px;
 }

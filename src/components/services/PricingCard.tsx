@@ -20,13 +20,13 @@ export default function PricingCard({ service }: PricingCardProps) {
     <div
       className={`relative flex flex-col rounded-3xl p-6 shadow-sm ring-1 transition-shadow hover:shadow-lg ${
         service.popular
-          ? 'bg-rose-600 text-white ring-rose-500'
-          : 'bg-white text-stone-900 ring-stone-100'
+          ? 'bg-blue-600 text-white ring-blue-500'
+          : 'bg-white text-slate-900 ring-slate-100'
       }`}
     >
       {/* "Most popular" badge */}
       {service.popular && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-400 px-4 py-1 text-xs font-bold text-amber-900 shadow">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-1 text-xs font-bold text-blue-600 shadow">
           ⭐ {s.popular}
         </span>
       )}
@@ -39,7 +39,7 @@ export default function PricingCard({ service }: PricingCardProps) {
       {/* Service name */}
       <h3
         className={`mt-3 font-[var(--font-playfair)] text-xl font-bold ${
-          service.popular ? 'text-white' : 'text-stone-900'
+          service.popular ? 'text-white' : 'text-slate-900'
         }`}
       >
         {name}
@@ -48,7 +48,7 @@ export default function PricingCard({ service }: PricingCardProps) {
       {/* Description */}
       <p
         className={`mt-2 text-sm leading-relaxed ${
-          service.popular ? 'text-rose-100' : 'text-stone-500'
+          service.popular ? 'text-blue-100' : 'text-slate-500'
         }`}
       >
         {description}
@@ -58,13 +58,13 @@ export default function PricingCard({ service }: PricingCardProps) {
       <div className="mt-4">
         <p
           className={`text-3xl font-extrabold ${
-            service.popular ? 'text-white' : 'text-rose-600'
+            service.popular ? 'text-white' : 'text-brand-600'
           }`}
         >
           ${service.price}
           <span
             className={`text-sm font-normal ${
-              service.popular ? 'text-rose-200' : 'text-stone-400'
+              service.popular ? 'text-blue-200' : 'text-slate-400'
             }`}
           >
             {' '}
@@ -77,7 +77,7 @@ export default function PricingCard({ service }: PricingCardProps) {
       <ul className="mt-5 flex-1 space-y-2">
         <p
           className={`mb-2 text-xs font-semibold uppercase tracking-wider ${
-            service.popular ? 'text-rose-200' : 'text-stone-400'
+            service.popular ? 'text-blue-200' : 'text-slate-400'
           }`}
         >
           {s.includes}
@@ -86,12 +86,12 @@ export default function PricingCard({ service }: PricingCardProps) {
           <li
             key={feature}
             className={`flex items-start gap-2 text-sm ${
-              service.popular ? 'text-rose-100' : 'text-stone-600'
+              service.popular ? 'text-blue-100' : 'text-slate-600'
             }`}
           >
             <span
               className={`mt-0.5 shrink-0 ${
-                service.popular ? 'text-amber-300' : 'text-emerald-500'
+                service.popular ? 'text-white' : 'text-brand-600'
               }`}
               aria-hidden="true"
             >
@@ -110,7 +110,7 @@ export default function PricingCard({ service }: PricingCardProps) {
           fullWidth
           className={
             service.popular
-              ? 'bg-white text-rose-600 hover:bg-rose-50'
+              ? 'bg-white text-blue-600 hover:bg-blue-50'
               : ''
           }
         >

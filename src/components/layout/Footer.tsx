@@ -17,7 +17,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-stone-900 text-stone-300">
+    <footer className="bg-slate-900 text-slate-300">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand column */}
@@ -25,20 +25,20 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 text-white">
               <span className="text-2xl" aria-hidden="true">🐾</span>
               <span className="font-[var(--font-playfair)] text-lg font-bold">
-                Montreal <span className="text-rose-400">Pet Care</span>
+                Montreal <span className="text-brand-400">Pet Care</span>
               </span>
             </Link>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-stone-400">
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-400">
               {t.footer.tagline}
             </p>
-            <p className="mt-4 text-sm text-stone-500">
+            <p className="mt-4 text-sm text-slate-500">
               {t.footer.madeWith}
             </p>
           </div>
 
           {/* Quick links column */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-200">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-200">
               {t.footer.quickLinks}
             </h3>
             <ul className="space-y-2">
@@ -46,7 +46,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-stone-400 transition-colors hover:text-white"
+                    className="text-sm text-slate-400 transition-colors hover:text-white"
                   >
                     {label}
                   </Link>
@@ -57,10 +57,10 @@ export default function Footer() {
 
           {/* Contact column */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-200">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-200">
               {t.footer.contactTitle}
             </h3>
-            <ul className="space-y-3 text-sm text-stone-400">
+            <ul className="space-y-3 text-sm text-slate-400">
               <li>
                 <a
                   href={`mailto:${t.contact.emailValue}`}
@@ -95,7 +95,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 border-t border-stone-700 pt-6 text-center text-xs text-stone-500">
+        <div className="mt-10 border-t border-slate-700 pt-6 text-center text-xs text-slate-500">
           © {year} Montreal Pet Care — Luna Larrazabal. {t.footer.rights}
         </div>
       </div>

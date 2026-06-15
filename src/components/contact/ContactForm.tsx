@@ -63,26 +63,26 @@ export default function ContactForm() {
   };
 
   const inputClass = (field: keyof FormData) =>
-    `w-full rounded-xl border px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-500 transition ${
+    `w-full rounded-xl border px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
       errors[field]
         ? 'border-red-400 bg-red-50'
-        : 'border-stone-200 bg-white hover:border-stone-300'
+        : 'border-slate-200 bg-white hover:border-slate-300'
     }`;
 
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-8 py-12 text-center ring-1 ring-emerald-100">
         <span className="text-5xl" aria-hidden="true">✅</span>
-        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-stone-900">
+        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-slate-900">
           {c.successTitle}
         </h3>
-        <p className="mt-2 text-stone-500">{c.successText}</p>
+        <p className="mt-2 text-slate-500">{c.successText}</p>
         <button
           onClick={() => {
             setStatus('idle');
             setForm({ name: '', email: '', phone: '', message: '', honeypot: '' });
           }}
-          className="mt-6 text-sm font-medium text-rose-600 hover:underline"
+          className="mt-6 text-sm font-medium text-brand-600 hover:underline"
         >
           Send another message
         </button>
@@ -105,7 +105,7 @@ export default function ContactForm() {
       />
 
       <div>
-        <label htmlFor="contact-name" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="contact-name" className="mb-1 block text-sm font-medium text-slate-700">
           {c.formName} *
         </label>
         <input
@@ -121,7 +121,7 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="contact-email" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="contact-email" className="mb-1 block text-sm font-medium text-slate-700">
           {c.formEmail} *
         </label>
         <input
@@ -137,7 +137,7 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="contact-phone" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="contact-phone" className="mb-1 block text-sm font-medium text-slate-700">
           {c.formPhone}
         </label>
         <input
@@ -152,7 +152,7 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="contact-message" className="mb-1 block text-sm font-medium text-stone-700">
+        <label htmlFor="contact-message" className="mb-1 block text-sm font-medium text-slate-700">
           {c.formMessage} *
         </label>
         <textarea
