@@ -9,7 +9,6 @@ export default function ContactClient() {
 
   const contactDetails = [
     { icon: '✉️', label: c.emailLabel, value: c.emailValue, href: `mailto:${c.emailValue}` },
-    { icon: '📞', label: c.phoneLabel, value: c.phoneValue, href: `tel:${c.phoneValue.replace(/\s/g, '')}` },
     { icon: '📸', label: c.instagramLabel, value: c.instagramValue, href: 'https://instagram.com' },
   ];
 

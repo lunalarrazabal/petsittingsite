@@ -72,15 +72,6 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href={`tel:${t.contact.phoneValue.replace(/\s/g, '')}`}
-                  className="flex items-center gap-2 transition-colors hover:text-white"
-                >
-                  <span aria-hidden="true">📞</span>
-                  {t.contact.phoneValue}
-                </a>
-              </li>
-              <li>
-                <a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"

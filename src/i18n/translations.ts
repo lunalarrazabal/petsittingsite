@@ -86,10 +86,8 @@ export const translations = {
       subtitle:
         "Have a question or want to discuss your pet's needs? I'd love to hear from you!",
       emailLabel: 'Email',
-      phoneLabel: 'Phone',
       instagramLabel: 'Instagram',
       emailValue: 'lunnalarrazabal@gmail.com',
-      phoneValue: '+1 (514) 000-0000',
       instagramValue: '@montrealPetCare',
       areaTitle: 'Service Area',
       areaDescription:
@@ -160,6 +158,20 @@ export const translations = {
       followUs: 'Follow Me',
       rights: 'All rights reserved.',
       madeWith: 'Made with ❤️ for Montreal pets',
+    },
+    trustBadges: {
+      experienceTitle: '10 Years of Experience',
+      experienceSub: 'A lifetime of caring for pets of all kinds',
+      meetGreetTitle: 'Meet & Greet First',
+      meetGreetSub: 'Every booking starts with a free introduction',
+      topRatedTitle: '5.0 · 13 Reviews',
+      topRatedSub: 'Five-star rated by every client on Rover',
+      photoUpdatesTitle: 'Daily Photo Updates',
+      photoUpdatesSub: 'Every booking includes photos and check-ins',
+      fastResponseTitle: 'Responds Quickly',
+      fastResponseSub: 'Usually replies within the hour',
+      flexibleTitle: 'Flexible Scheduling',
+      flexibleSub: 'Weekdays, evenings, and weekends available',
     },
     days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     months: [
@@ -326,10 +338,8 @@ export const translations = {
       subtitle:
         "Vous avez une question ou souhaitez discuter des besoins de votre animal ? Je serais ravie d'avoir de vos nouvelles !",
       emailLabel: 'Courriel',
-      phoneLabel: 'Téléphone',
       instagramLabel: 'Instagram',
       emailValue: 'lunnalarrazabal@gmail.com',
-      phoneValue: '+1 (514) 000-0000',
       instagramValue: '@montrealPetCare',
       areaTitle: 'Zone de service',
       areaDescription:
@@ -400,6 +410,20 @@ export const translations = {
       followUs: 'Suivez-moi',
       rights: 'Tous droits réservés.',
       madeWith: 'Fait avec ❤️ pour les animaux de Montréal',
+    },
+    trustBadges: {
+      experienceTitle: '10 ans d\'expérience',
+      experienceSub: 'Une vie entière à prendre soin d\'animaux de toutes sortes',
+      meetGreetTitle: 'Rencontre préalable',
+      meetGreetSub: 'Chaque réservation commence par une présentation gratuite',
+      topRatedTitle: '5,0 · 13 avis',
+      topRatedSub: 'Cinq étoiles de chaque client sur Rover',
+      photoUpdatesTitle: 'Photos quotidiennes',
+      photoUpdatesSub: 'Chaque réservation inclut photos et nouvelles',
+      fastResponseTitle: 'Réponse rapide',
+      fastResponseSub: 'Répond habituellement en moins d\'une heure',
+      flexibleTitle: 'Horaires flexibles',
+      flexibleSub: 'Disponible en semaine, en soirée et le week-end',
     },
     days: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
     months: [

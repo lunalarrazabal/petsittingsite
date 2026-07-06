@@ -7,7 +7,7 @@ import ServicesClient from './ServicesClient';
 export const metadata: Metadata = {
   title: 'Services & Pricing',
   description:
-    'Professional pet sitting services in Montreal: dog walking ($20), drop-in visits ($25), overnight sitting ($75), and pet boarding ($65/night). Transparent pricing, loving care.',
+    'Professional pet sitting services in Montreal by Luna Larrazabal: pet boarding ($40/night), doggy day care ($40/day), and dog walking ($28/walk). Transparent pricing, loving care.',
 };
 
 export default function ServicesPage() {

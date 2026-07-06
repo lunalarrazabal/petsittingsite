@@ -2,6 +2,7 @@
 // It's a recreation of Luna's Rover.com sitter profile.
 
 import ProfileHeader from '@/components/profile/ProfileHeader';
+import TrustBadges from '@/components/profile/TrustBadges';
 import HeaderPhotoGrid from '@/components/profile/HeaderPhotoGrid';
 import ServicesRatesCard from '@/components/profile/ServicesRatesCard';
 import HostingCapabilities from '@/components/profile/HostingCapabilities';
@@ -17,6 +18,7 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
       <ProfileHeader />
+      <TrustBadges />
       <HeaderPhotoGrid />
       <div className="mt-8 grid gap-8 lg:grid-cols-3 lg:items-start">
         <aside className="order-2 space-y-6 lg:order-1 lg:sticky lg:top-24 lg:col-span-1">

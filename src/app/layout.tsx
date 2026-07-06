@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: '%s | Montreal Pet Care',
   },
   description:
-    'Professional, loving pet care in Montreal. Dog walking, drop-in visits, overnight sitting, and boarding by Luna Larrazabal. Serving Plateau-Mont-Royal, Mile End, Rosemont & more.',
+    'Professional, loving pet care in Montreal. Pet boarding ($40/night), doggy day care ($40/day), and dog walking ($28/walk) by Luna Larrazabal. Serving Plateau-Mont-Royal, Mile End, Rosemont & more.',
   keywords: [
     'pet sitter Montreal',
     'dog walker Montreal',
@@ -57,6 +57,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Montreal Pet Care',
     description: 'Professional pet sitting in Montreal by Luna Larrazabal.',
+    images: ['/og-image.jpg'],
   },
 };
 
