@@ -1,39 +1,44 @@
-// This is the Home page — the first thing visitors see.
-// It's a recreation of Luna's Rover.com sitter profile.
-
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import TrustBadges from '@/components/profile/TrustBadges';
-import HeaderPhotoGrid from '@/components/profile/HeaderPhotoGrid';
-import ServicesRatesCard from '@/components/profile/ServicesRatesCard';
-import HostingCapabilities from '@/components/profile/HostingCapabilities';
-import AvailabilityWidget from '@/components/profile/AvailabilityWidget';
-import LocationCard from '@/components/profile/LocationCard';
+import HomeServicesSection from '@/components/profile/HomeServicesSection';
 import PetCareExperience from '@/components/profile/PetCareExperience';
 import AboutMeStats from '@/components/profile/AboutMeStats';
 import SafetyEnvironment from '@/components/profile/SafetyEnvironment';
-import SitterPreferences from '@/components/profile/SitterPreferences';
-import ReviewsModule from '@/components/profile/ReviewsModule';
+import GalleryPreview from '@/components/profile/GalleryPreview';
+import ReviewsCarousel from '@/components/profile/ReviewsCarousel';
+import BookingCTA from '@/components/profile/BookingCTA';
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
+    <div className="mx-auto max-w-6xl px-4 pb-20 pt-8 sm:px-6 lg:pt-12">
+      {/* Hero */}
       <ProfileHeader />
+
+      {/* Trust Badges */}
       <TrustBadges />
-      <HeaderPhotoGrid />
-      <div className="mt-8 grid gap-8 lg:grid-cols-3 lg:items-start">
-        <aside className="order-2 space-y-6 lg:order-1 lg:sticky lg:top-24 lg:col-span-1">
-          <ServicesRatesCard />
-          <HostingCapabilities />
-          <AvailabilityWidget />
-          <LocationCard />
-        </aside>
-        <main className="order-1 space-y-10 lg:order-2 lg:col-span-2">
-          <PetCareExperience />
-          <AboutMeStats />
-          <SafetyEnvironment />
-          <SitterPreferences />
-          <ReviewsModule />
-        </main>
+
+      {/* Main content — generous vertical rhythm */}
+      <div className="mt-20 space-y-20">
+        {/* Services */}
+        <HomeServicesSection />
+
+        {/* Pet Care Experience */}
+        <PetCareExperience />
+
+        {/* About Me */}
+        <AboutMeStats />
+
+        {/* Safety, Trust & Environment */}
+        <SafetyEnvironment />
+
+        {/* Gallery preview */}
+        <GalleryPreview />
+
+        {/* Reviews */}
+        <ReviewsCarousel />
+
+        {/* Booking CTA */}
+        <BookingCTA />
       </div>
     </div>
   );

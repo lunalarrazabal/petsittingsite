@@ -159,6 +159,10 @@ export const translations = {
       rights: 'All rights reserved.',
       madeWith: 'Made with ❤️ for Montreal pets',
     },
+    cta: {
+      heading: "Ready to book?",
+      subtext: "Fill out a request and I'll confirm within 24 hours.",
+    },
     trustBadges: {
       experienceTitle: '10 Years of Experience',
       experienceSub: 'A lifetime of caring for pets of all kinds',
@@ -410,6 +414,10 @@ export const translations = {
       followUs: 'Suivez-moi',
       rights: 'Tous droits réservés.',
       madeWith: 'Fait avec ❤️ pour les animaux de Montréal',
+    },
+    cta: {
+      heading: "Prêt à réserver ?",
+      subtext: "Remplissez une demande et je confirmerai dans les 24 heures.",
     },
     trustBadges: {
       experienceTitle: '10 ans d\'expérience',

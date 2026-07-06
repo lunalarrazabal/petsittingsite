@@ -16,7 +16,7 @@ export default function LocationCard() {
           title={p.locationHeading}
           width="100%"
           height="100%"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=-73.5878%2C45.4876%2C-73.5708%2C45.4996&layer=mapnik&marker=45.4936%2C-73.5793"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-73.5933%2C45.4846%2C-73.5653%2C45.5026&layer=mapnik"
           loading="lazy"
           className="block"
         />

@@ -66,7 +66,7 @@ export default function ContactClient() {
                 title="Montreal service area map"
                 width="100%"
                 height="200"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-73.6503%2C45.4955%2C-73.5503%2C45.5555&layer=mapnik&marker=45.5255%2C-73.6003"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-73.5933%2C45.4846%2C-73.5653%2C45.5026&layer=mapnik"
                 className="block"
                 loading="lazy"
               />

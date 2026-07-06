@@ -34,3 +34,12 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* Hide scrollbar for carousel while preserving scroll & touch behaviour */
+.carousel-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.carousel-scroll::-webkit-scrollbar {
+  display: none;
+}

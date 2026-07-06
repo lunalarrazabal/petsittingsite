@@ -24,14 +24,16 @@ export default function SafetyEnvironment() {
         {p.safetyHeading}
       </h2>
       <p className="mt-3 leading-relaxed text-slate-600">{p.safetyBody}</p>
-      <ul className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {items.map(({ Icon, text }) => (
           <li
             key={text}
-            className="flex flex-col items-center gap-2 rounded-xl bg-slate-50 p-4 text-center text-xs text-slate-600"
+            className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100"
           >
-            <Icon className="h-5 w-5 text-brand-600" aria-hidden="true" />
-            {text}
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
+            </span>
+            <span className="text-sm text-slate-700">{text}</span>
           </li>
         ))}
       </ul>
