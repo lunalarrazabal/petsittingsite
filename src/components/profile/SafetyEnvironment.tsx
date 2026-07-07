@@ -1,6 +1,6 @@
 'use client';
 
-import { Building2, Trees, CigaretteOff, PawPrint, Baby, BedDouble, Sofa, Timer } from 'lucide-react';
+import { Building2, Trees, CigaretteOff, Baby, Timer } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 export default function SafetyEnvironment() {
@@ -9,13 +9,10 @@ export default function SafetyEnvironment() {
 
   const items = [
     { Icon: Building2, text: p.envApartment },
-    { Icon: Trees, text: p.envNoYard },
+    { Icon: Trees,     text: p.envNoYard },
     { Icon: CigaretteOff, text: p.envNonSmoking },
-    { Icon: PawPrint, text: p.envNoPets },
-    { Icon: Baby, text: p.envNoChildren },
-    { Icon: BedDouble, text: p.envNoBed },
-    { Icon: Sofa, text: p.envNoFurniture },
-    { Icon: Timer, text: p.envPottyBreaks },
+    { Icon: Baby,      text: p.envNoChildren },
+    { Icon: Timer,     text: p.envPottyBreaks },
   ];
 
   return (

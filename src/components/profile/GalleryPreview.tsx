@@ -31,7 +31,7 @@ export default function GalleryPreview() {
       </div>
       <p className="mt-1 text-sm text-slate-500">{t.gallery.subtitle}</p>
 
-      <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+      <div className="mt-4 grid grid-cols-3 gap-1.5">
         {photos.map((photo, i) => {
           const alt = language === 'en' ? photo.altEn : photo.altFr;
           const isLast = i === photos.length - 1;
@@ -40,7 +40,7 @@ export default function GalleryPreview() {
             <Link
               key={photo.id}
               href="/gallery"
-              className="group relative block aspect-square overflow-hidden rounded-xl bg-slate-100 focus-visible:outline-blue-500"
+              className="group relative block aspect-[3/2] overflow-hidden rounded-lg bg-slate-100 focus-visible:outline-blue-500"
               aria-label={isLast ? `${t.homeProfile.photosLabel} — ${t.homeProfile.viewAll}` : alt}
             >
               <Image
