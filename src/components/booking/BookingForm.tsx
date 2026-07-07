@@ -23,7 +23,7 @@ interface FormData {
 type FormErrors = Partial<Record<keyof FormData | 'photo' | 'services', string>>;
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
-// Primary service groups shown in the main selector (dog + cat only)
+// Primary service groups (dog + cat only)
 const dogServices = services.filter((s) => s.category === 'dog');
 const catServices = services.filter((s) => s.category === 'cat');
 
@@ -32,12 +32,12 @@ const SERVICE_GROUPS = [
   { key: 'cat', labelEn: 'Cat Services', labelFr: 'Services pour chats',  items: catServices },
 ] as const;
 
-// Additional services shown as secondary checkboxes
+// Additional services — additional-dog and additional-cat also reveal a pet name input
 const ADDON_OPTIONS = [
-  { id: 'additional-dog', labelEn: 'Additional Dog',  labelFr: 'Chien supplémentaire', price: 20, unit: 'night' },
-  { id: 'additional-cat', labelEn: 'Additional Cat',  labelFr: 'Chat supplémentaire',  price: 15, unit: 'night' },
-  { id: 'pickup',         labelEn: 'Pick-up Service', labelFr: 'Service de ramassage', price: 50, unit: 'one way' },
-  { id: 'dropoff',        labelEn: 'Drop-off Service',labelFr: 'Service de livraison', price: 50, unit: 'one way' },
+  { id: 'additional-dog', labelEn: 'Additional Dog',  labelFr: 'Chien supplémentaire', price: 20, unit: 'night', hasPetName: true  },
+  { id: 'additional-cat', labelEn: 'Additional Cat',  labelFr: 'Chat supplémentaire',  price: 15, unit: 'night', hasPetName: true  },
+  { id: 'pickup',         labelEn: 'Pick-up Service', labelFr: 'Service de ramassage', price: 50, unit: 'one way', hasPetName: false },
+  { id: 'dropoff',        labelEn: 'Drop-off Service',labelFr: 'Service de livraison', price: 50, unit: 'one way', hasPetName: false },
 ] as const;
 
 export default function BookingForm() {
@@ -48,8 +48,9 @@ export default function BookingForm() {
     name: '', email: '', phone: '', petName: '', petType: '',
     date: '', endDate: '', instructions: '', honeypot: '',
   });
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedAddons,   setSelectedAddons]   = useState<string[]>([]);
+  const [selectedServices, setSelectedServices]   = useState<string[]>([]);
+  const [selectedAddons,   setSelectedAddons]     = useState<string[]>([]);
+  const [addonPetNames,    setAddonPetNames]      = useState<Record<string, string>>({});
   const [errors,  setErrors]  = useState<FormErrors>({});
   const [status,  setStatus]  = useState<Status>('idle');
   const [photoFile,    setPhotoFile]    = useState<File | null>(null);
@@ -69,9 +70,18 @@ export default function BookingForm() {
   };
 
   const toggleAddon = (id: string) => {
+    const isCurrentlySelected = selectedAddons.includes(id);
     setSelectedAddons((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+      isCurrentlySelected ? prev.filter((s) => s !== id) : [...prev, id]
     );
+    // Clear pet name when unchecking
+    if (isCurrentlySelected) {
+      setAddonPetNames((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+    }
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +124,12 @@ export default function BookingForm() {
       if (selectedAddons.length > 0) {
         fd.append('additionalServices', selectedAddons.join(','));
       }
+      if (addonPetNames['additional-dog']) {
+        fd.append('additionalDogName', addonPetNames['additional-dog']);
+      }
+      if (addonPetNames['additional-cat']) {
+        fd.append('additionalCatName', addonPetNames['additional-cat']);
+      }
       if (photoFile) fd.append('photo', photoFile);
       const res = await fetch('/api/booking', { method: 'POST', body: fd });
       setStatus(res.ok ? 'success' : 'error');
@@ -145,6 +161,7 @@ export default function BookingForm() {
             setForm({ name: '', email: '', phone: '', petName: '', petType: '', date: '', endDate: '', instructions: '', honeypot: '' });
             setSelectedServices([]);
             setSelectedAddons([]);
+            setAddonPetNames({});
             setPhotoFile(null);
             setPhotoPreview(null);
           }}
@@ -272,7 +289,7 @@ export default function BookingForm() {
         <p className="mb-2 text-sm font-medium text-slate-700">
           {b.formService}{' '}
           <span className="font-normal text-slate-400">
-            {language === 'en' ? '(select all that apply)' : '(sélectionner tout ce qui s\'applique)'} *
+            {language === 'en' ? '(select all that apply)' : "(sélectionner tout ce qui s'applique)"} *
           </span>
         </p>
 
@@ -344,34 +361,66 @@ export default function BookingForm() {
             const checked = selectedAddons.includes(addon.id);
             const label   = language === 'en' ? addon.labelEn : addon.labelFr;
             const isLast  = i === ADDON_OPTIONS.length - 1;
+            const showPetName = checked && addon.hasPetName;
+
+            const petNameLabel = language === 'en'
+              ? `Name of ${label}`
+              : addon.id === 'additional-dog'
+                ? 'Nom du chien supplémentaire'
+                : 'Nom du chat supplémentaire';
+
             return (
-              <label
-                key={addon.id}
-                className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${
-                  checked ? 'bg-slate-50' : 'hover:bg-slate-50'
-                } ${!isLast ? 'border-b border-slate-100' : ''}`}
-              >
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                    checked ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
+              <div key={addon.id} className={!isLast ? 'border-b border-slate-100' : ''}>
+                {/* Checkbox row */}
+                <label
+                  className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${
+                    checked ? 'bg-slate-50' : 'hover:bg-slate-50'
                   }`}
-                  aria-hidden="true"
                 >
-                  {checked && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
-                </span>
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={checked}
-                  onChange={() => toggleAddon(addon.id)}
-                  value={addon.id}
-                />
-                <span className="flex-1 text-sm text-slate-700">{label}</span>
-                <span className="shrink-0 text-sm font-semibold text-slate-900">
-                  +${addon.price}
-                  <span className="ml-0.5 text-xs font-normal text-slate-400">/{addon.unit}</span>
-                </span>
-              </label>
+                  <span
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                      checked ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {checked && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+                  </span>
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={checked}
+                    onChange={() => toggleAddon(addon.id)}
+                    value={addon.id}
+                  />
+                  <span className="flex-1 text-sm text-slate-700">{label}</span>
+                  <span className="shrink-0 text-sm font-semibold text-slate-900">
+                    +${addon.price}
+                    <span className="ml-0.5 text-xs font-normal text-slate-400">/{addon.unit}</span>
+                  </span>
+                </label>
+
+                {/* Pet name input — visible when hasPetName addon is checked */}
+                {showPetName && (
+                  <div className="border-t border-slate-100 bg-slate-50 px-4 pb-4 pt-3">
+                    <label
+                      htmlFor={`addon-name-${addon.id}`}
+                      className="mb-1.5 block text-xs font-medium text-slate-500"
+                    >
+                      {petNameLabel}
+                    </label>
+                    <input
+                      id={`addon-name-${addon.id}`}
+                      type="text"
+                      value={addonPetNames[addon.id] ?? ''}
+                      onChange={(e) =>
+                        setAddonPetNames((prev) => ({ ...prev, [addon.id]: e.target.value }))
+                      }
+                      placeholder={language === 'en' ? 'Enter pet name' : "Entrez le nom de l'animal"}
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition hover:border-slate-300"
+                    />
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
@@ -396,33 +445,51 @@ export default function BookingForm() {
         />
       </div>
 
-      {/* Pet photo upload */}
+      {/* ── Pet photo upload ──────────────────────────────────────────────── */}
       <div>
         <label className="mb-1 block text-sm font-medium text-slate-700">
           {b.formPhoto}
         </label>
-        <p className="mb-2 text-xs text-slate-400">{b.formPhotoHint}</p>
 
         {photoPreview ? (
           <div className="flex items-center gap-4">
             <div className="relative h-16 w-16 overflow-hidden rounded-xl">
               <Image src={photoPreview} alt="Pet photo preview" fill className="object-cover" />
             </div>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="text-sm font-medium text-brand-600 hover:underline"
-            >
-              {b.formPhotoChange}
-            </button>
+            <div>
+              <p className="text-sm font-medium text-slate-700">
+                {language === 'en' ? 'Photo uploaded!' : 'Photo téléchargée !'}
+              </p>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-0.5 text-sm font-medium text-brand-600 hover:underline"
+              >
+                {b.formPhotoChange}
+              </button>
+            </div>
           </div>
         ) : (
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-200 px-4 py-6 text-sm text-slate-400 transition-colors hover:border-brand-300 hover:text-brand-600"
+            className="w-full rounded-2xl border-2 border-dashed border-slate-200 px-6 py-6 text-left transition-colors hover:border-brand-300 hover:bg-brand-50/40"
           >
-            {language === 'en' ? 'Click to upload a photo of your pet' : 'Cliquez pour télécharger une photo de votre animal'}
+            <p className="text-sm font-semibold text-slate-800">
+              {language === 'en'
+                ? "I'm excited to meet your furry friend! 🐾"
+                : "J'ai hâte de rencontrer votre compagnon ! 🐾"}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              {language === 'en'
+                ? "Please upload a recent photo of your pet (or pets) so I can start getting to know them before our meet & greet. If multiple pets are included in your booking, please upload a photo of each one!"
+                : "Téléchargez une photo récente de votre animal (ou de vos animaux) pour que je puisse commencer à les connaître avant notre rencontre. Si plusieurs animaux sont inclus, n'hésitez pas à en ajouter une pour chacun !"}
+            </p>
+            <span className="mt-3 inline-block text-xs font-medium text-brand-600">
+              {language === 'en'
+                ? 'Click to upload · JPG, PNG, WEBP · Max 5 MB'
+                : 'Cliquez pour télécharger · JPG, PNG, WEBP · Max 5 Mo'}
+            </span>
           </button>
         )}
 

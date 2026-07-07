@@ -66,19 +66,19 @@ export default function ServicesClient() {
   const transportServices = services.filter((sv) => sv.category === 'transport');
 
   return (
-    <div className="py-16 sm:py-20">
+    <div className="py-10 sm:py-14">
       {/* Page header */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <span className="rounded-full bg-brand-100 px-4 py-1 text-sm font-medium text-brand-700">
           {s.badge}
         </span>
-        <h1 className="mt-4 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
+        <h1 className="mt-3 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
           {s.title}
         </h1>
-        <p className="mt-4 text-lg text-slate-500">{s.subtitle}</p>
+        <p className="mt-3 text-lg text-slate-500">{s.subtitle}</p>
       </div>
 
-      <div className="mx-auto mt-16 max-w-6xl space-y-20 px-4 sm:px-6">
+      <div className="mx-auto mt-10 max-w-6xl space-y-12 px-4 sm:px-6">
 
         {/* ── Dog Services ─────────────────────────────────────────────────── */}
         <section aria-labelledby="dog-services-heading">
@@ -195,7 +195,7 @@ export default function ServicesClient() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mx-auto mt-20 max-w-2xl px-4 text-center sm:px-6">
+      <div className="mx-auto mt-12 max-w-2xl px-4 text-center sm:px-6">
         <div className="rounded-3xl bg-slate-50 px-8 py-10 ring-1 ring-slate-100">
           <span className="flex h-12 w-12 mx-auto items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
             <PawPrint className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />

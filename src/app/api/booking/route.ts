@@ -25,6 +25,8 @@ export async function POST(request: Request) {
   const petType               = formData.get('petType')              as string;
   const servicesRaw           = formData.get('services')             as string; // comma-separated IDs
   const additionalServicesRaw = formData.get('additionalServices')   as string; // comma-separated IDs (optional)
+  const additionalDogName     = formData.get('additionalDogName')    as string;
+  const additionalCatName     = formData.get('additionalCatName')    as string;
   const checkIn               = formData.get('date')                 as string;
   const checkOut              = formData.get('endDate')              as string;
   const instructions          = formData.get('instructions')         as string;
@@ -50,7 +52,12 @@ export async function POST(request: Request) {
   const addonIds     = additionalServicesRaw
     ? additionalServicesRaw.split(',').map((s) => s.trim()).filter(Boolean)
     : [];
-  const addonDisplay = addonIds.map((id) => addonLabels[id] ?? id);
+  const addonDisplay = addonIds.map((id) => {
+    let label = addonLabels[id] ?? id;
+    if (id === 'additional-dog' && additionalDogName?.trim()) label += ` — ${additionalDogName.trim()}`;
+    if (id === 'additional-cat' && additionalCatName?.trim()) label += ` — ${additionalCatName.trim()}`;
+    return label;
+  });
 
   // Handle optional photo attachment
   type Attachment = { filename: string; content: Buffer };

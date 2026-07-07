@@ -6,7 +6,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { galleryPhotos } from '@/data/gallery';
 
 const GRID_SIZES =
-  '(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw';
+  '(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw';
 
 // Lightbox — a full-screen overlay that shows the selected photo enlarged,
 // with keyboard + button navigation between photos.
@@ -109,14 +109,14 @@ export default function PhotoGrid() {
   return (
     <>
       {/* Responsive masonry-style grid using CSS columns */}
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4">
+      <div className="columns-2 gap-2 sm:columns-3 lg:columns-4 xl:columns-5">
         {galleryPhotos.map((photo, index) => {
           const alt = language === 'en' ? photo.altEn : photo.altFr;
           return (
             <button
               key={photo.id}
               onClick={() => setActiveIndex(index)}
-              className="group mb-4 block w-full overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-100 transition-shadow duration-200 hover:shadow-lg focus-visible:outline-blue-500"
+              className="group mb-2 block w-full overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-100 transition-shadow duration-200 hover:shadow-md focus-visible:outline-blue-500"
               aria-label={`View larger: ${alt}`}
             >
               <Image

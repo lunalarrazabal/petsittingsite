@@ -111,7 +111,7 @@ export const translations = {
       title: 'Request a Booking',
       subtitle:
         "Fill out the form below and I'll get back to you within 24 hours to confirm your booking.",
-      calendarTitle: 'My Availability',
+      calendarTitle: 'Select the Length of Your Stay',
       calendarSubtitle:
         'Select your check-in date, then your check-out date.',
       unavailable: 'Unavailable',
@@ -168,7 +168,7 @@ export const translations = {
       experienceSub: 'A lifetime of caring for pets of all kinds',
       meetGreetTitle: 'Meet & Greet First',
       meetGreetSub: 'Every booking starts with a free introduction',
-      topRatedTitle: '5.0 · 13 Reviews',
+      topRatedTitle: '5.0 · 87 Reviews',
       topRatedSub: 'Five-star rated by every client on Rover',
       photoUpdatesTitle: 'Daily Photo Updates',
       photoUpdatesSub: 'Every booking includes photos and check-ins',
@@ -185,7 +185,7 @@ export const translations = {
     homeProfile: {
       name: 'Luna L.',
       location: 'Montreal, QC',
-      ratingSummary: '5.0 · 13 reviews',
+      ratingSummary: '5.0 · 87 reviews',
       statusText:
         'Your profile has been approved. Pet parents viewing your profile can now send you booking requests.',
       bookCta: 'Book a Stay',
@@ -367,7 +367,7 @@ export const translations = {
       title: 'Demande de réservation',
       subtitle:
         'Remplissez le formulaire ci-dessous et je vous recontacterai dans les 24 heures pour confirmer.',
-      calendarTitle: 'Mes disponibilités',
+      calendarTitle: 'Choisissez la durée de votre séjour',
       calendarSubtitle:
         "Sélectionnez votre date d'arrivée, puis votre date de départ.",
       unavailable: 'Indisponible',
@@ -424,7 +424,7 @@ export const translations = {
       experienceSub: 'Une vie entière à prendre soin d\'animaux de toutes sortes',
       meetGreetTitle: 'Rencontre préalable',
       meetGreetSub: 'Chaque réservation commence par une présentation gratuite',
-      topRatedTitle: '5,0 · 13 avis',
+      topRatedTitle: '5,0 · 87 avis',
       topRatedSub: 'Cinq étoiles de chaque client sur Rover',
       photoUpdatesTitle: 'Photos quotidiennes',
       photoUpdatesSub: 'Chaque réservation inclut photos et nouvelles',
@@ -441,7 +441,7 @@ export const translations = {
     homeProfile: {
       name: 'Luna L.',
       location: 'Montréal, QC',
-      ratingSummary: '5,0 · 13 avis',
+      ratingSummary: '5,0 · 87 avis',
       statusText:
         "Votre profil a été approuvé. Les parents d'animaux qui consultent votre profil peuvent maintenant vous envoyer des demandes de réservation.",
       bookCta: 'Réserver un séjour',

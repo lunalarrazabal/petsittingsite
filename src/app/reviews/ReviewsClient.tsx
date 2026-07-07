@@ -9,51 +9,21 @@ export default function ReviewsClient() {
   const { t } = useLanguage();
   const r = t.reviews;
 
-  const averageRating =
-    reviews.reduce((sum, rev) => sum + rev.rating, 0) / reviews.length;
-
   return (
-    <div className="py-16 sm:py-20">
+    <div className="py-10 sm:py-14">
       {/* Page header */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <span className="rounded-full bg-brand-100 px-4 py-1 text-sm font-medium text-brand-700">
           {r.badge}
         </span>
-        <h1 className="mt-4 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
+        <h1 className="mt-3 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
           {r.title}
         </h1>
-        <p className="mt-4 text-lg text-slate-500">{r.subtitle}</p>
-
-        {/* Overall rating summary */}
-        <div className="mx-auto mt-8 flex w-fit items-center gap-4 rounded-2xl bg-brand-50 px-8 py-4 ring-1 ring-brand-100">
-          <p className="text-5xl font-extrabold text-brand-600">
-            {averageRating.toFixed(1)}
-          </p>
-          <div className="text-left">
-            <div className="flex gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`text-xl ${
-                    i < Math.round(averageRating)
-                      ? 'text-brand-600'
-                      : 'text-slate-200'
-                  }`}
-                  aria-hidden="true"
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-            <p className="mt-0.5 text-sm text-slate-500">
-              Based on {reviews.length} reviews
-            </p>
-          </div>
-        </div>
+        <p className="mt-3 text-lg text-slate-500">{r.subtitle}</p>
       </div>
 
       {/* Reviews grid */}
-      <div className="mx-auto mt-14 grid max-w-6xl gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
+      <div className="mx-auto mt-10 grid max-w-6xl gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}

@@ -13,19 +13,19 @@ export default function ContactClient() {
   ];
 
   return (
-    <div className="py-16 sm:py-20">
+    <div className="py-10 sm:py-14">
       {/* Page header */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <span className="rounded-full bg-brand-100 px-4 py-1 text-sm font-medium text-brand-700">
           {c.badge}
         </span>
-        <h1 className="mt-4 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
+        <h1 className="mt-3 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
           {c.title}
         </h1>
-        <p className="mt-4 text-lg text-slate-500">{c.subtitle}</p>
+        <p className="mt-3 text-lg text-slate-500">{c.subtitle}</p>
       </div>
 
-      <div className="mx-auto mt-14 grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2">
+      <div className="mx-auto mt-10 grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2">
         {/* Left column: contact info + map */}
         <div className="space-y-8">
           {/* Contact details cards */}

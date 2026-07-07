@@ -8,7 +8,6 @@ import {
   PlusCircle,
   Car,
   Star,
-  Check,
   type LucideIcon,
 } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -39,13 +38,12 @@ export default function PricingCard({ service }: PricingCardProps) {
 
   const name        = language === 'en' ? service.nameEn        : service.nameFr;
   const description = language === 'en' ? service.descriptionEn : service.descriptionFr;
-  const features    = language === 'en' ? service.featuresEn    : service.featuresFr;
 
   const isPopular = !!service.popular;
 
   return (
     <div
-      className={`relative flex flex-col rounded-3xl p-6 shadow-sm ring-1 transition-shadow duration-200 hover:shadow-lg ${
+      className={`relative flex flex-col rounded-2xl p-5 shadow-sm ring-1 transition-shadow duration-200 hover:shadow-md ${
         isPopular
           ? 'bg-blue-600 text-white ring-blue-500'
           : 'bg-white text-slate-900 ring-slate-100'
@@ -60,7 +58,7 @@ export default function PricingCard({ service }: PricingCardProps) {
 
       {/* Icon */}
       <span
-        className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+        className={`flex h-10 w-10 items-center justify-center rounded-xl ${
           isPopular ? 'bg-blue-500' : 'bg-brand-50 text-brand-700'
         }`}
         aria-hidden="true"
@@ -70,7 +68,7 @@ export default function PricingCard({ service }: PricingCardProps) {
 
       {/* Name */}
       <h3
-        className={`mt-4 font-[var(--font-playfair)] text-xl font-bold ${
+        className={`mt-3 font-[var(--font-playfair)] text-lg font-bold ${
           isPopular ? 'text-white' : 'text-slate-900'
         }`}
       >
@@ -79,7 +77,7 @@ export default function PricingCard({ service }: PricingCardProps) {
 
       {/* Description */}
       <p
-        className={`mt-2 text-sm leading-relaxed ${
+        className={`mt-1.5 flex-1 text-sm leading-relaxed ${
           isPopular ? 'text-blue-100' : 'text-slate-500'
         }`}
       >
@@ -87,9 +85,9 @@ export default function PricingCard({ service }: PricingCardProps) {
       </p>
 
       {/* Price */}
-      <div className="mt-5">
+      <div className="mt-4">
         <p
-          className={`text-3xl font-extrabold tracking-tight ${
+          className={`text-2xl font-extrabold tracking-tight ${
             isPopular ? 'text-white' : 'text-brand-600'
           }`}
         >
@@ -104,36 +102,8 @@ export default function PricingCard({ service }: PricingCardProps) {
         </p>
       </div>
 
-      {/* Feature list */}
-      <ul className="mt-5 flex-1 space-y-2.5">
-        <p
-          className={`mb-3 text-xs font-semibold uppercase tracking-wider ${
-            isPopular ? 'text-blue-200' : 'text-slate-400'
-          }`}
-        >
-          {s.includes}
-        </p>
-        {features.map((feature) => (
-          <li
-            key={feature}
-            className={`flex items-start gap-2.5 text-sm ${
-              isPopular ? 'text-blue-100' : 'text-slate-600'
-            }`}
-          >
-            <Check
-              className={`mt-0.5 h-4 w-4 shrink-0 ${
-                isPopular ? 'text-blue-200' : 'text-brand-600'
-              }`}
-              strokeWidth={2.5}
-              aria-hidden="true"
-            />
-            {feature}
-          </li>
-        ))}
-      </ul>
-
       {/* CTA */}
-      <div className="mt-6">
+      <div className="mt-4">
         <Button
           href="/booking"
           variant={isPopular ? 'ghost' : 'outline'}
