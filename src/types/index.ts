@@ -1,8 +1,10 @@
 export type Language = 'en' | 'fr';
 
+export type ServiceCategory = 'dog' | 'cat' | 'addon' | 'transport';
+
 export interface Service {
   id: string;
-  icon: string;
+  category: ServiceCategory;
   nameEn: string;
   nameFr: string;
   descriptionEn: string;

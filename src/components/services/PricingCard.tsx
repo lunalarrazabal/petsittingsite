@@ -1,8 +1,32 @@
 'use client';
 
+import {
+  Home,
+  Sun,
+  Footprints,
+  Moon,
+  PlusCircle,
+  Car,
+  Star,
+  Check,
+  type LucideIcon,
+} from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { type Service } from '@/types';
 import Button from '@/components/ui/Button';
+
+function getIcon(id: string): LucideIcon {
+  switch (id) {
+    case 'dog-daycare':  return Sun;
+    case 'dog-walking':  return Footprints;
+    case 'cat-boarding': return Moon;
+    case 'additional-dog':
+    case 'additional-cat': return PlusCircle;
+    case 'pickup':
+    case 'dropoff':      return Car;
+    default:             return Home;
+  }
+}
 
 interface PricingCardProps {
   service: Service;
@@ -11,35 +35,43 @@ interface PricingCardProps {
 export default function PricingCard({ service }: PricingCardProps) {
   const { t, language } = useLanguage();
   const s = t.services;
+  const Icon = getIcon(service.id);
 
-  const name = language === 'en' ? service.nameEn : service.nameFr;
+  const name        = language === 'en' ? service.nameEn        : service.nameFr;
   const description = language === 'en' ? service.descriptionEn : service.descriptionFr;
-  const features = language === 'en' ? service.featuresEn : service.featuresFr;
+  const features    = language === 'en' ? service.featuresEn    : service.featuresFr;
+
+  const isPopular = !!service.popular;
 
   return (
     <div
-      className={`relative flex flex-col rounded-3xl p-6 shadow-sm ring-1 transition-shadow hover:shadow-lg ${
-        service.popular
+      className={`relative flex flex-col rounded-3xl p-6 shadow-sm ring-1 transition-shadow duration-200 hover:shadow-lg ${
+        isPopular
           ? 'bg-blue-600 text-white ring-blue-500'
           : 'bg-white text-slate-900 ring-slate-100'
       }`}
     >
-      {/* "Most popular" badge */}
-      {service.popular && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-4 py-1 text-xs font-bold text-blue-600 shadow">
-          ⭐ {s.popular}
+      {isPopular && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-white px-4 py-1 text-xs font-bold text-blue-600 shadow">
+          <Star className="h-3 w-3 fill-blue-500 text-blue-500" aria-hidden="true" />
+          {s.popular}
         </span>
       )}
 
       {/* Icon */}
-      <span className="text-4xl" aria-hidden="true">
-        {service.icon}
+      <span
+        className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+          isPopular ? 'bg-blue-500' : 'bg-brand-50 text-brand-700'
+        }`}
+        aria-hidden="true"
+      >
+        <Icon className="h-5 w-5" strokeWidth={1.75} />
       </span>
 
-      {/* Service name */}
+      {/* Name */}
       <h3
-        className={`mt-3 font-[var(--font-playfair)] text-xl font-bold ${
-          service.popular ? 'text-white' : 'text-slate-900'
+        className={`mt-4 font-[var(--font-playfair)] text-xl font-bold ${
+          isPopular ? 'text-white' : 'text-slate-900'
         }`}
       >
         {name}
@@ -48,36 +80,35 @@ export default function PricingCard({ service }: PricingCardProps) {
       {/* Description */}
       <p
         className={`mt-2 text-sm leading-relaxed ${
-          service.popular ? 'text-blue-100' : 'text-slate-500'
+          isPopular ? 'text-blue-100' : 'text-slate-500'
         }`}
       >
         {description}
       </p>
 
       {/* Price */}
-      <div className="mt-4">
+      <div className="mt-5">
         <p
-          className={`text-3xl font-extrabold ${
-            service.popular ? 'text-white' : 'text-brand-600'
+          className={`text-3xl font-extrabold tracking-tight ${
+            isPopular ? 'text-white' : 'text-brand-600'
           }`}
         >
           ${service.price}
           <span
-            className={`text-sm font-normal ${
-              service.popular ? 'text-blue-200' : 'text-slate-400'
+            className={`text-sm font-normal tracking-normal ${
+              isPopular ? 'text-blue-200' : 'text-slate-400'
             }`}
           >
-            {' '}
-            / {service.unit}
+            {' '}/ {service.unit}
           </span>
         </p>
       </div>
 
       {/* Feature list */}
-      <ul className="mt-5 flex-1 space-y-2">
+      <ul className="mt-5 flex-1 space-y-2.5">
         <p
-          className={`mb-2 text-xs font-semibold uppercase tracking-wider ${
-            service.popular ? 'text-blue-200' : 'text-slate-400'
+          className={`mb-3 text-xs font-semibold uppercase tracking-wider ${
+            isPopular ? 'text-blue-200' : 'text-slate-400'
           }`}
         >
           {s.includes}
@@ -85,34 +116,29 @@ export default function PricingCard({ service }: PricingCardProps) {
         {features.map((feature) => (
           <li
             key={feature}
-            className={`flex items-start gap-2 text-sm ${
-              service.popular ? 'text-blue-100' : 'text-slate-600'
+            className={`flex items-start gap-2.5 text-sm ${
+              isPopular ? 'text-blue-100' : 'text-slate-600'
             }`}
           >
-            <span
-              className={`mt-0.5 shrink-0 ${
-                service.popular ? 'text-white' : 'text-brand-600'
+            <Check
+              className={`mt-0.5 h-4 w-4 shrink-0 ${
+                isPopular ? 'text-blue-200' : 'text-brand-600'
               }`}
+              strokeWidth={2.5}
               aria-hidden="true"
-            >
-              ✓
-            </span>
+            />
             {feature}
           </li>
         ))}
       </ul>
 
-      {/* CTA button */}
+      {/* CTA */}
       <div className="mt-6">
         <Button
           href="/booking"
-          variant={service.popular ? 'ghost' : 'outline'}
+          variant={isPopular ? 'ghost' : 'outline'}
           fullWidth
-          className={
-            service.popular
-              ? 'bg-white text-blue-600 hover:bg-blue-50'
-              : ''
-          }
+          className={isPopular ? 'bg-white text-blue-600 hover:bg-blue-50' : ''}
         >
           {s.bookService}
         </Button>

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
+import { Check } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { services } from '@/data/services';
 import AvailabilityCalendar from './AvailabilityCalendar';
@@ -13,16 +14,27 @@ interface FormData {
   phone: string;
   petName: string;
   petType: string;
-  service: string;
   date: string;
   endDate: string;
   instructions: string;
   honeypot: string;
 }
 
-type FormErrors = Partial<Record<keyof FormData | 'photo', string>>;
-
+type FormErrors = Partial<Record<keyof FormData | 'photo' | 'services', string>>;
 type Status = 'idle' | 'loading' | 'success' | 'error';
+
+// Service groups shown in the booking form.
+const dogServices       = services.filter((s) => s.category === 'dog');
+const catServices       = services.filter((s) => s.category === 'cat');
+const addonServices     = services.filter((s) => s.category === 'addon');
+const transportServices = services.filter((s) => s.category === 'transport');
+
+const SERVICE_GROUPS = [
+  { key: 'dog',       labelEn: 'Dog Services',       labelFr: 'Services pour chiens',  items: dogServices },
+  { key: 'cat',       labelEn: 'Cat Services',        labelFr: 'Services pour chats',   items: catServices },
+  { key: 'addon',     labelEn: 'Additional Pets',     labelFr: 'Animaux supplémentaires', items: addonServices },
+  { key: 'transport', labelEn: 'Transportation',      labelFr: 'Transport',             items: transportServices },
+] as const;
 
 export default function BookingForm() {
   const { t, language } = useLanguage();
@@ -34,12 +46,12 @@ export default function BookingForm() {
     phone: '',
     petName: '',
     petType: '',
-    service: '',
     date: '',
     endDate: '',
     instructions: '',
     honeypot: '',
   });
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<Status>('idle');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -49,6 +61,13 @@ export default function BookingForm() {
   const update = (field: keyof FormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: '' }));
+  };
+
+  const toggleService = (id: string) => {
+    setSelectedServices((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+    );
+    if (errors.services) setErrors((prev) => ({ ...prev, services: '' }));
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,15 +84,20 @@ export default function BookingForm() {
     setErrors((prev) => ({ ...prev, photo: '' }));
   };
 
+  // Show end-date picker whenever any overnight service is selected.
+  const hasBoardingService = selectedServices.some((id) =>
+    id.includes('boarding')
+  );
+
   const validate = (): boolean => {
     const e: FormErrors = {};
-    if (!form.name.trim()) e.name = b.nameRequired;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = b.emailRequired;
-    if (!form.phone.trim()) e.phone = b.phoneRequired;
-    if (!form.petName.trim()) e.petName = b.petNameRequired;
-    if (!form.petType) e.petType = b.petTypeRequired;
-    if (!form.service) e.service = b.serviceRequired;
-    if (!form.date) e.date = b.dateRequired;
+    if (!form.name.trim())                                   e.name     = b.nameRequired;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))    e.email    = b.emailRequired;
+    if (!form.phone.trim())                                  e.phone    = b.phoneRequired;
+    if (!form.petName.trim())                                e.petName  = b.petNameRequired;
+    if (!form.petType)                                       e.petType  = b.petTypeRequired;
+    if (selectedServices.length === 0)                       e.services = b.serviceRequired;
+    if (!form.date)                                          e.date     = b.dateRequired;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -81,16 +105,14 @@ export default function BookingForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
     setStatus('loading');
-
     try {
       const fd = new FormData();
       (Object.keys(form) as (keyof FormData)[]).forEach((key) =>
         fd.append(key, form[key])
       );
+      fd.append('services', selectedServices.join(','));
       if (photoFile) fd.append('photo', photoFile);
-
       const res = await fetch('/api/booking', { method: 'POST', body: fd });
       setStatus(res.ok ? 'success' : 'error');
     } catch {
@@ -108,7 +130,9 @@ export default function BookingForm() {
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-8 py-14 text-center ring-1 ring-emerald-100">
-        <span className="text-6xl" aria-hidden="true">🎉</span>
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
+          <Check className="h-8 w-8 text-emerald-600" strokeWidth={2.5} aria-hidden="true" />
+        </span>
         <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-slate-900">
           {b.successTitle}
         </h3>
@@ -116,7 +140,8 @@ export default function BookingForm() {
         <button
           onClick={() => {
             setStatus('idle');
-            setForm({ name: '', email: '', phone: '', petName: '', petType: '', service: '', date: '', endDate: '', instructions: '', honeypot: '' });
+            setForm({ name: '', email: '', phone: '', petName: '', petType: '', date: '', endDate: '', instructions: '', honeypot: '' });
+            setSelectedServices([]);
             setPhotoFile(null);
             setPhotoPreview(null);
           }}
@@ -130,7 +155,7 @@ export default function BookingForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
-      {/* Honeypot spam trap */}
+      {/* Honeypot */}
       <input
         type="text"
         name="website"
@@ -149,7 +174,7 @@ export default function BookingForm() {
         error={errors.date}
       />
 
-      {/* Two-column grid for name / email */}
+      {/* Name / Email */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="bk-name" className="mb-1 block text-sm font-medium text-slate-700">
@@ -166,7 +191,6 @@ export default function BookingForm() {
           />
           {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
         </div>
-
         <div>
           <label htmlFor="bk-email" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formEmail} *
@@ -217,7 +241,6 @@ export default function BookingForm() {
           />
           {errors.petName && <p className="mt-1 text-xs text-red-600">{errors.petName}</p>}
         </div>
-
         <div>
           <label htmlFor="bk-pet-type" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formPetType} *
@@ -237,29 +260,78 @@ export default function BookingForm() {
         </div>
       </div>
 
-      {/* Service selection */}
+      {/* ── Service multi-select ──────────────────────────────────────────── */}
       <div>
-        <label htmlFor="bk-service" className="mb-1 block text-sm font-medium text-slate-700">
-          {b.formService} *
-        </label>
-        <select
-          id="bk-service"
-          value={form.service}
-          onChange={(e) => update('service', e.target.value)}
-          className={inputClass('service')}
+        <p className="mb-2 text-sm font-medium text-slate-700">
+          {b.formService} <span className="text-slate-400 font-normal">(select all that apply) *</span>
+        </p>
+
+        <div
+          className={`rounded-2xl border ${
+            errors.services ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'
+          } overflow-hidden`}
         >
-          <option value="">{b.selectService}</option>
-          {services.map((s) => (
-            <option key={s.id} value={s.id}>
-              {language === 'en' ? s.nameEn : s.nameFr} — ${s.price} / {s.unit}
-            </option>
+          {SERVICE_GROUPS.map((group, gi) => (
+            <div key={group.key} className={gi > 0 ? 'border-t border-slate-100' : ''}>
+              {/* Group label */}
+              <div className="bg-slate-50 px-4 py-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  {language === 'en' ? group.labelEn : group.labelFr}
+                </p>
+              </div>
+
+              {/* Service checkboxes */}
+              {group.items.map((svc, si) => {
+                const checked = selectedServices.includes(svc.id);
+                const name    = language === 'en' ? svc.nameEn : svc.nameFr;
+                const isLast  = si === group.items.length - 1;
+
+                return (
+                  <label
+                    key={svc.id}
+                    className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${
+                      checked ? 'bg-brand-50' : 'hover:bg-slate-50'
+                    } ${!isLast ? 'border-b border-slate-100' : ''}`}
+                  >
+                    {/* Custom checkbox */}
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                        checked
+                          ? 'border-brand-600 bg-brand-600'
+                          : 'border-slate-300 bg-white'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {checked && (
+                        <Check className="h-3 w-3 text-white" strokeWidth={3} />
+                      )}
+                    </span>
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={checked}
+                      onChange={() => toggleService(svc.id)}
+                      value={svc.id}
+                    />
+                    <span className="flex-1 text-sm text-slate-700">{name}</span>
+                    <span className="shrink-0 text-sm font-semibold text-slate-900">
+                      ${svc.price}
+                      <span className="ml-0.5 text-xs font-normal text-slate-400">/{svc.unit}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
           ))}
-        </select>
-        {errors.service && <p className="mt-1 text-xs text-red-600">{errors.service}</p>}
+        </div>
+
+        {errors.services && (
+          <p className="mt-1 text-xs text-red-600">{errors.services}</p>
+        )}
       </div>
 
-      {/* End date — only shown for multi-day services */}
-      {['boarding'].includes(form.service) && (
+      {/* End date — shown when a boarding service is selected */}
+      {hasBoardingService && (
         <div>
           <label htmlFor="bk-end-date" className="mb-1 block text-sm font-medium text-slate-700">
             {b.formEndDate}
@@ -300,12 +372,7 @@ export default function BookingForm() {
         {photoPreview ? (
           <div className="flex items-center gap-4">
             <div className="relative h-16 w-16 overflow-hidden rounded-xl">
-              <Image
-                src={photoPreview}
-                alt="Pet photo preview"
-                fill
-                className="object-cover"
-              />
+              <Image src={photoPreview} alt="Pet photo preview" fill className="object-cover" />
             </div>
             <button
               type="button"
@@ -321,7 +388,6 @@ export default function BookingForm() {
             onClick={() => fileInputRef.current?.click()}
             className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-200 px-4 py-6 text-sm text-slate-400 transition-colors hover:border-brand-300 hover:text-brand-600"
           >
-            <span className="text-xl" aria-hidden="true">📷</span>
             Click to upload a photo of your pet
           </button>
         )}
@@ -343,12 +409,7 @@ export default function BookingForm() {
         </p>
       )}
 
-      <Button
-        type="submit"
-        size="lg"
-        fullWidth
-        disabled={status === 'loading'}
-      >
+      <Button type="submit" size="lg" fullWidth disabled={status === 'loading'}>
         {status === 'loading' ? b.sending : b.formSubmit}
       </Button>
     </form>

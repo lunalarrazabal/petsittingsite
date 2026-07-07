@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Sun, Footprints, Tag, type LucideIcon } from 'lucide-react';
+import { Home, Sun, Footprints, Moon, Tag, type LucideIcon } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { services } from '@/data/services';
 import type { Translations } from '@/i18n/translations';
@@ -14,12 +14,10 @@ function getServiceMeta(id: string): {
   unitKey: keyof HomeProfile;
 } {
   switch (id) {
-    case 'doggy-daycare':
-      return { Icon: Sun, locationKey: 'doggyDaycareLocation', unitKey: 'perDay' };
-    case 'dog-walking':
-      return { Icon: Footprints, locationKey: 'dogWalkingLocation', unitKey: 'perWalk' };
-    default:
-      return { Icon: Home, locationKey: 'boardingLocation', unitKey: 'perNight' };
+    case 'dog-daycare':  return { Icon: Sun,       locationKey: 'doggyDaycareLocation', unitKey: 'perDay'   };
+    case 'dog-walking':  return { Icon: Footprints, locationKey: 'dogWalkingLocation',   unitKey: 'perWalk'  };
+    case 'cat-boarding': return { Icon: Moon,       locationKey: 'boardingLocation',     unitKey: 'perNight' };
+    default:             return { Icon: Home,       locationKey: 'boardingLocation',     unitKey: 'perNight' };
   }
 }
 

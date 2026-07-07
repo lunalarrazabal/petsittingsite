@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Sun, Footprints, ArrowRight, type LucideIcon } from 'lucide-react';
+import { Home, Sun, Footprints, Moon, ArrowRight, type LucideIcon } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { services } from '@/data/services';
 import type { Translations } from '@/i18n/translations';
@@ -14,14 +14,17 @@ function getServiceMeta(id: string): {
   unitKey: keyof HomeProfile;
 } {
   switch (id) {
-    case 'doggy-daycare':
-      return { Icon: Sun, locationKey: 'doggyDaycareLocation', unitKey: 'perDay' };
-    case 'dog-walking':
-      return { Icon: Footprints, locationKey: 'dogWalkingLocation', unitKey: 'perWalk' };
-    default:
-      return { Icon: Home, locationKey: 'boardingLocation', unitKey: 'perNight' };
+    case 'dog-daycare':  return { Icon: Sun,       locationKey: 'doggyDaycareLocation', unitKey: 'perDay'   };
+    case 'dog-walking':  return { Icon: Footprints, locationKey: 'dogWalkingLocation',   unitKey: 'perWalk'  };
+    case 'cat-boarding': return { Icon: Moon,       locationKey: 'boardingLocation',     unitKey: 'perNight' };
+    default:             return { Icon: Home,       locationKey: 'boardingLocation',     unitKey: 'perNight' };
   }
 }
+
+// Show only primary (dog + cat) services on the homepage.
+const primaryServices = services.filter(
+  (s) => s.category === 'dog' || s.category === 'cat'
+);
 
 export default function HomeServicesSection() {
   const { t, language } = useLanguage();
@@ -43,12 +46,12 @@ export default function HomeServicesSection() {
       </div>
       <p className="mt-1 text-sm text-slate-500">{p.servicesSubtext}</p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        {services.map((service) => {
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {primaryServices.map((service) => {
           const { Icon, locationKey, unitKey } = getServiceMeta(service.id);
-          const name = language === 'en' ? service.nameEn : service.nameFr;
+          const name        = language === 'en' ? service.nameEn        : service.nameFr;
           const description = language === 'en' ? service.descriptionEn : service.descriptionFr;
-          const features = language === 'en' ? service.featuresEn : service.featuresFr;
+          const features    = language === 'en' ? service.featuresEn    : service.featuresFr;
 
           return (
             <div
@@ -56,7 +59,7 @@ export default function HomeServicesSection() {
               className="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100 transition-shadow duration-200 hover:shadow-md"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-                <Icon className="h-5 w-5" aria-hidden="true" />
+                <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
               </span>
 
               <div className="mt-4 flex-1">
