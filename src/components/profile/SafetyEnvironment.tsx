@@ -17,7 +17,7 @@ export default function SafetyEnvironment() {
 
   return (
     <section>
-      <h2 className="font-[var(--font-playfair)] text-2xl font-bold text-slate-900 sm:text-3xl">
+      <h2 className="font-[var(--font-playfair)] text-xl font-bold text-slate-900 sm:text-2xl">
         {p.safetyHeading}
       </h2>
       <p className="mt-3 leading-relaxed text-slate-600">{p.safetyBody}</p>

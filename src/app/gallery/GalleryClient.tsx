@@ -9,16 +9,16 @@ export default function GalleryClient() {
   const g = t.gallery;
 
   return (
-    <div className="py-10 sm:py-14">
+    <div className="py-7 sm:py-10">
       {/* Page header */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <span className="rounded-full bg-brand-100 px-4 py-1 text-sm font-medium text-brand-700">
           {g.badge}
         </span>
-        <h1 className="mt-3 font-[var(--font-playfair)] text-4xl font-bold text-slate-900 sm:text-5xl">
+        <h1 className="mt-3 font-[var(--font-playfair)] text-3xl font-bold text-slate-900 sm:text-4xl">
           {g.title}
         </h1>
-        <p className="mt-3 text-lg text-slate-500">{g.subtitle}</p>
+        <p className="mt-3 text-base text-slate-500">{g.subtitle}</p>
 
         {/* Instagram note */}
         <p className="mt-2 text-sm font-medium text-brand-600">{g.instagramNote}</p>

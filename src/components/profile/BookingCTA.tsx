@@ -8,11 +8,11 @@ export default function BookingCTA() {
   const { t } = useLanguage();
 
   return (
-    <section className="overflow-hidden rounded-3xl bg-brand-600 px-8 py-14 text-center sm:py-20">
-      <h2 className="font-[var(--font-playfair)] text-3xl font-bold text-white sm:text-4xl">
+    <section className="overflow-hidden rounded-3xl bg-brand-600 px-8 py-10 text-center sm:py-14">
+      <h2 className="font-[var(--font-playfair)] text-2xl font-bold text-white sm:text-3xl">
         {t.cta.heading}
       </h2>
-      <p className="mt-3 text-base text-brand-100 sm:text-lg">
+      <p className="mt-3 text-sm text-brand-100 sm:text-base">
         {t.cta.subtext}
       </p>
       <div className="mt-8">

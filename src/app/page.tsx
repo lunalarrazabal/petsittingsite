@@ -18,7 +18,7 @@ export default function HomePage() {
       <TrustBadges />
 
       {/* Main content — generous vertical rhythm */}
-      <div className="mt-20 space-y-20">
+      <div className="mt-16 space-y-16">
         {/* Services */}
         <HomeServicesSection />
 

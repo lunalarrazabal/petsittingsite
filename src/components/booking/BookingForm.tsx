@@ -2,10 +2,12 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Check } from 'lucide-react';
+import { Check, Minus, Plus } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { services } from '@/data/services';
+import { calculateEstimate } from '@/lib/booking-estimate';
 import DateRangePicker from './DateRangePicker';
+import BookingSummary from './BookingSummary';
 import Button from '@/components/ui/Button';
 
 interface FormData {
@@ -23,7 +25,6 @@ interface FormData {
 type FormErrors = Partial<Record<keyof FormData | 'photo' | 'services', string>>;
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
-// Primary service groups (dog + cat only)
 const dogServices = services.filter((s) => s.category === 'dog');
 const catServices = services.filter((s) => s.category === 'cat');
 
@@ -32,13 +33,28 @@ const SERVICE_GROUPS = [
   { key: 'cat', labelEn: 'Cat Services', labelFr: 'Services pour chats',  items: catServices },
 ] as const;
 
-// Additional services — additional-dog and additional-cat also reveal a pet name input
-const ADDON_OPTIONS = [
-  { id: 'additional-dog', labelEn: 'Additional Dog',  labelFr: 'Chien supplémentaire', price: 20, unit: 'night', hasPetName: true  },
-  { id: 'additional-cat', labelEn: 'Additional Cat',  labelFr: 'Chat supplémentaire',  price: 15, unit: 'night', hasPetName: true  },
-  { id: 'pickup',         labelEn: 'Pick-up Service', labelFr: 'Service de ramassage', price: 50, unit: 'one way', hasPetName: false },
-  { id: 'dropoff',        labelEn: 'Drop-off Service',labelFr: 'Service de livraison', price: 50, unit: 'one way', hasPetName: false },
-] as const;
+function QtyButton({
+  onClick, disabled, children,
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors ${
+        disabled
+          ? 'cursor-not-allowed border-slate-200 text-slate-300'
+          : 'border-slate-300 text-slate-600 hover:border-brand-500 hover:text-brand-600'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function BookingForm() {
   const { t, language } = useLanguage();
@@ -48,9 +64,13 @@ export default function BookingForm() {
     name: '', email: '', phone: '', petName: '', petType: '',
     date: '', endDate: '', instructions: '', honeypot: '',
   });
-  const [selectedServices, setSelectedServices]   = useState<string[]>([]);
-  const [selectedAddons,   setSelectedAddons]     = useState<string[]>([]);
-  const [addonPetNames,    setAddonPetNames]      = useState<Record<string, string>>({});
+  const [selectedServices,  setSelectedServices]  = useState<string[]>([]);
+  const [additionalDogs,    setAdditionalDogs]    = useState(0);
+  const [additionalCats,    setAdditionalCats]    = useState(0);
+  const [additionalDogNames, setAdditionalDogNames] = useState<string[]>([]);
+  const [additionalCatNames, setAdditionalCatNames] = useState<string[]>([]);
+  const [includePickup,  setIncludePickup]  = useState(false);
+  const [includeDropoff, setIncludeDropoff] = useState(false);
   const [errors,  setErrors]  = useState<FormErrors>({});
   const [status,  setStatus]  = useState<Status>('idle');
   const [photoFile,    setPhotoFile]    = useState<File | null>(null);
@@ -69,19 +89,29 @@ export default function BookingForm() {
     if (errors.services) setErrors((prev) => ({ ...prev, services: '' }));
   };
 
-  const toggleAddon = (id: string) => {
-    const isCurrentlySelected = selectedAddons.includes(id);
-    setSelectedAddons((prev) =>
-      isCurrentlySelected ? prev.filter((s) => s !== id) : [...prev, id]
-    );
-    // Clear pet name when unchecking
-    if (isCurrentlySelected) {
-      setAddonPetNames((prev) => {
-        const next = { ...prev };
-        delete next[id];
-        return next;
+  const updateDogQty = (delta: number) => {
+    setAdditionalDogs((prev) => {
+      const next = Math.max(0, prev + delta);
+      // Resize name array, preserving existing entries
+      setAdditionalDogNames((names) => {
+        const arr = [...names];
+        while (arr.length < next) arr.push('');
+        return arr.slice(0, next);
       });
-    }
+      return next;
+    });
+  };
+
+  const updateCatQty = (delta: number) => {
+    setAdditionalCats((prev) => {
+      const next = Math.max(0, prev + delta);
+      setAdditionalCatNames((names) => {
+        const arr = [...names];
+        while (arr.length < next) arr.push('');
+        return arr.slice(0, next);
+      });
+      return next;
+    });
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,22 +145,27 @@ export default function BookingForm() {
     e.preventDefault();
     if (!validate()) return;
     setStatus('loading');
+
+    const estimate = calculateEstimate({
+      selectedServices, checkIn: form.date, checkOut: form.endDate,
+      additionalDogs, additionalCats, includePickup, includeDropoff,
+    });
+
     try {
       const fd = new FormData();
       (Object.keys(form) as (keyof FormData)[]).forEach((key) =>
         fd.append(key, form[key])
       );
       fd.append('services', selectedServices.join(','));
-      if (selectedAddons.length > 0) {
-        fd.append('additionalServices', selectedAddons.join(','));
-      }
-      if (addonPetNames['additional-dog']) {
-        fd.append('additionalDogName', addonPetNames['additional-dog']);
-      }
-      if (addonPetNames['additional-cat']) {
-        fd.append('additionalCatName', addonPetNames['additional-cat']);
-      }
+      fd.append('additionalDogs',     String(additionalDogs));
+      fd.append('additionalCats',     String(additionalCats));
+      fd.append('additionalDogNames', JSON.stringify(additionalDogNames));
+      fd.append('additionalCatNames', JSON.stringify(additionalCatNames));
+      fd.append('includePickup',      String(includePickup));
+      fd.append('includeDropoff',     String(includeDropoff));
+      fd.append('estimatedTotal',     String(estimate.total));
       if (photoFile) fd.append('photo', photoFile);
+
       const res = await fetch('/api/booking', { method: 'POST', body: fd });
       setStatus(res.ok ? 'success' : 'error');
     } catch {
@@ -160,8 +195,12 @@ export default function BookingForm() {
             setStatus('idle');
             setForm({ name: '', email: '', phone: '', petName: '', petType: '', date: '', endDate: '', instructions: '', honeypot: '' });
             setSelectedServices([]);
-            setSelectedAddons([]);
-            setAddonPetNames({});
+            setAdditionalDogs(0);
+            setAdditionalCats(0);
+            setAdditionalDogNames([]);
+            setAdditionalCatNames([]);
+            setIncludePickup(false);
+            setIncludeDropoff(false);
             setPhotoFile(null);
             setPhotoPreview(null);
           }}
@@ -172,6 +211,8 @@ export default function BookingForm() {
       </div>
     );
   }
+
+  const isFr = language === 'fr';
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
@@ -289,7 +330,7 @@ export default function BookingForm() {
         <p className="mb-2 text-sm font-medium text-slate-700">
           {b.formService}{' '}
           <span className="font-normal text-slate-400">
-            {language === 'en' ? '(select all that apply)' : "(sélectionner tout ce qui s'applique)"} *
+            {isFr ? "(sélectionner tout ce qui s'applique)" : '(select all that apply)'} *
           </span>
         </p>
 
@@ -302,12 +343,12 @@ export default function BookingForm() {
             <div key={group.key} className={gi > 0 ? 'border-t border-slate-100' : ''}>
               <div className="bg-slate-50 px-4 py-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  {language === 'en' ? group.labelEn : group.labelFr}
+                  {isFr ? group.labelFr : group.labelEn}
                 </p>
               </div>
               {group.items.map((svc, si) => {
                 const checked = selectedServices.includes(svc.id);
-                const name    = language === 'en' ? svc.nameEn : svc.nameFr;
+                const name    = isFr ? svc.nameFr : svc.nameEn;
                 const isLast  = si === group.items.length - 1;
                 return (
                   <label
@@ -349,82 +390,238 @@ export default function BookingForm() {
 
       {/* ── Additional Services ───────────────────────────────────────────── */}
       <div>
-        <p className="mb-2 text-sm font-medium text-slate-700">
-          {language === 'en' ? 'Additional Services' : 'Services supplémentaires'}
+        <p className="mb-1 text-sm font-medium text-slate-700">
+          {isFr ? 'Animaux et services supplémentaires' : 'Additional Pets & Services'}
           <span className="ml-1.5 text-xs font-normal text-slate-400">
-            {language === 'en' ? '(optional)' : '(facultatif)'}
+            {isFr ? '(facultatif)' : '(optional)'}
           </span>
         </p>
 
+        {/* Explanation */}
+        <div className="mb-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+          <p className="text-xs leading-relaxed text-slate-500">
+            {isFr
+              ? `Le tarif de base couvre votre animal principal. Ajoutez des animaux supplémentaires ci-dessous si vous en avez plus d'un.`
+              : `The base rate covers your primary pet. Add below if you're bringing more than one.`}
+          </p>
+          <ul className="mt-2 space-y-1">
+            {(isFr
+              ? [
+                  '2 chiens → Réservez Pension pour chien + ajoutez 1 Chien supplémentaire',
+                  '1 chien + 1 chat → Réservez Pension pour chien + Pension pour chat, sans supplémentaire',
+                  '2 chats → Réservez Pension pour chat + ajoutez 1 Chat supplémentaire',
+                ]
+              : [
+                  '2 dogs → Book Dog Boarding + add 1 Additional Dog',
+                  '1 dog + 1 cat → Book Dog Boarding + Cat Boarding, no extra needed',
+                  '2 cats → Book Cat Boarding + add 1 Additional Cat',
+                ]
+            ).map((ex, i) => (
+              <li key={i} className="flex items-start gap-1.5 text-xs text-slate-400">
+                <span className="mt-0.5 shrink-0 text-slate-300">›</span>
+                {ex}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          {ADDON_OPTIONS.map((addon, i) => {
-            const checked = selectedAddons.includes(addon.id);
-            const label   = language === 'en' ? addon.labelEn : addon.labelFr;
-            const isLast  = i === ADDON_OPTIONS.length - 1;
-            const showPetName = checked && addon.hasPetName;
 
-            const petNameLabel = language === 'en'
-              ? `Name of ${label}`
-              : addon.id === 'additional-dog'
-                ? 'Nom du chien supplémentaire'
-                : 'Nom du chat supplémentaire';
-
-            return (
-              <div key={addon.id} className={!isLast ? 'border-b border-slate-100' : ''}>
-                {/* Checkbox row */}
-                <label
-                  className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${
-                    checked ? 'bg-slate-50' : 'hover:bg-slate-50'
-                  }`}
+          {/* ── Additional Dogs stepper ──────────────────────────────────── */}
+          <div className="border-b border-slate-100">
+            <div className="flex items-center gap-3 px-4 py-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-slate-700">
+                  {isFr ? 'Chien supplémentaire' : 'Additional Dog'}
+                </p>
+                <p className="text-xs text-slate-400">
+                  {isFr ? '+20 $/nuit par chien' : '+$20/night per dog'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <QtyButton
+                  onClick={() => updateDogQty(-1)}
+                  disabled={additionalDogs === 0}
                 >
-                  <span
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                      checked ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {checked && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
-                  </span>
-                  <input
-                    type="checkbox"
-                    className="sr-only"
-                    checked={checked}
-                    onChange={() => toggleAddon(addon.id)}
-                    value={addon.id}
-                  />
-                  <span className="flex-1 text-sm text-slate-700">{label}</span>
-                  <span className="shrink-0 text-sm font-semibold text-slate-900">
-                    +${addon.price}
-                    <span className="ml-0.5 text-xs font-normal text-slate-400">/{addon.unit}</span>
-                  </span>
-                </label>
+                  <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </QtyButton>
+                <span className="w-5 text-center text-sm font-semibold text-slate-800">
+                  {additionalDogs}
+                </span>
+                <QtyButton onClick={() => updateDogQty(1)}>
+                  <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </QtyButton>
+              </div>
+            </div>
 
-                {/* Pet name input — visible when hasPetName addon is checked */}
-                {showPetName && (
-                  <div className="border-t border-slate-100 bg-slate-50 px-4 pb-4 pt-3">
+            {/* Dog name inputs */}
+            <div
+              className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                additionalDogs > 0 ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+              }`}
+            >
+              <div className="border-t border-slate-100 bg-slate-50 px-4 pb-4 pt-3 space-y-3">
+                {Array.from({ length: additionalDogs }).map((_, idx) => (
+                  <div key={idx}>
                     <label
-                      htmlFor={`addon-name-${addon.id}`}
+                      htmlFor={`dog-name-${idx}`}
                       className="mb-1.5 block text-xs font-medium text-slate-500"
                     >
-                      {petNameLabel}
+                      {isFr ? `Nom du chien supplémentaire #${idx + 1}` : `Additional Dog #${idx + 1} Name`}
                     </label>
                     <input
-                      id={`addon-name-${addon.id}`}
+                      id={`dog-name-${idx}`}
                       type="text"
-                      value={addonPetNames[addon.id] ?? ''}
+                      value={additionalDogNames[idx] ?? ''}
                       onChange={(e) =>
-                        setAddonPetNames((prev) => ({ ...prev, [addon.id]: e.target.value }))
+                        setAdditionalDogNames((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = e.target.value;
+                          return arr;
+                        })
                       }
-                      placeholder={language === 'en' ? 'Enter pet name' : "Entrez le nom de l'animal"}
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition hover:border-slate-300"
+                      placeholder={isFr ? "Nom de l'animal" : 'Pet name'}
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 transition hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
-                )}
+                ))}
               </div>
-            );
-          })}
+            </div>
+          </div>
+
+          {/* ── Additional Cats stepper ──────────────────────────────────── */}
+          <div className="border-b border-slate-100">
+            <div className="flex items-center gap-3 px-4 py-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-slate-700">
+                  {isFr ? 'Chat supplémentaire' : 'Additional Cat'}
+                </p>
+                <p className="text-xs text-slate-400">
+                  {isFr ? '+15 $/nuit par chat' : '+$15/night per cat'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <QtyButton
+                  onClick={() => updateCatQty(-1)}
+                  disabled={additionalCats === 0}
+                >
+                  <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </QtyButton>
+                <span className="w-5 text-center text-sm font-semibold text-slate-800">
+                  {additionalCats}
+                </span>
+                <QtyButton onClick={() => updateCatQty(1)}>
+                  <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </QtyButton>
+              </div>
+            </div>
+
+            {/* Cat name inputs */}
+            <div
+              className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                additionalCats > 0 ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+              }`}
+            >
+              <div className="border-t border-slate-100 bg-slate-50 px-4 pb-4 pt-3 space-y-3">
+                {Array.from({ length: additionalCats }).map((_, idx) => (
+                  <div key={idx}>
+                    <label
+                      htmlFor={`cat-name-${idx}`}
+                      className="mb-1.5 block text-xs font-medium text-slate-500"
+                    >
+                      {isFr ? `Nom du chat supplémentaire #${idx + 1}` : `Additional Cat #${idx + 1} Name`}
+                    </label>
+                    <input
+                      id={`cat-name-${idx}`}
+                      type="text"
+                      value={additionalCatNames[idx] ?? ''}
+                      onChange={(e) =>
+                        setAdditionalCatNames((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = e.target.value;
+                          return arr;
+                        })
+                      }
+                      placeholder={isFr ? "Nom de l'animal" : 'Pet name'}
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 transition hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Pick-up ──────────────────────────────────────────────────── */}
+          <label className={`flex cursor-pointer items-center gap-3 border-b border-slate-100 px-4 py-3 transition-colors ${includePickup ? 'bg-slate-50' : 'hover:bg-slate-50'}`}>
+            <span
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                includePickup ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
+              }`}
+              aria-hidden="true"
+            >
+              {includePickup && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+            </span>
+            <input
+              type="checkbox"
+              className="sr-only"
+              checked={includePickup}
+              onChange={() => setIncludePickup((v) => !v)}
+            />
+            <span className="flex-1 text-sm text-slate-700">
+              {isFr ? 'Service de ramassage' : 'Pick-up Service'}
+            </span>
+            <span className="shrink-0 text-sm font-semibold text-slate-900">
+              +$50
+              <span className="ml-0.5 text-xs font-normal text-slate-400">
+                /{isFr ? 'trajet' : 'one way'}
+              </span>
+            </span>
+          </label>
+
+          {/* ── Drop-off ─────────────────────────────────────────────────── */}
+          <label className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${includeDropoff ? 'bg-slate-50' : 'hover:bg-slate-50'}`}>
+            <span
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                includeDropoff ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
+              }`}
+              aria-hidden="true"
+            >
+              {includeDropoff && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+            </span>
+            <input
+              type="checkbox"
+              className="sr-only"
+              checked={includeDropoff}
+              onChange={() => setIncludeDropoff((v) => !v)}
+            />
+            <span className="flex-1 text-sm text-slate-700">
+              {isFr ? 'Service de livraison' : 'Drop-off Service'}
+            </span>
+            <span className="shrink-0 text-sm font-semibold text-slate-900">
+              +$50
+              <span className="ml-0.5 text-xs font-normal text-slate-400">
+                /{isFr ? 'trajet' : 'one way'}
+              </span>
+            </span>
+          </label>
         </div>
       </div>
+
+      {/* ── Live price summary ────────────────────────────────────────────── */}
+      <BookingSummary
+        selectedServices={selectedServices}
+        checkIn={form.date}
+        checkOut={form.endDate}
+        additionalDogs={additionalDogs}
+        additionalCats={additionalCats}
+        additionalDogNames={additionalDogNames}
+        additionalCatNames={additionalCatNames}
+        includePickup={includePickup}
+        includeDropoff={includeDropoff}
+        petName={form.petName}
+        petType={form.petType}
+        language={language}
+      />
 
       {/* Special instructions */}
       <div>
@@ -437,9 +634,9 @@ export default function BookingForm() {
           value={form.instructions}
           onChange={(e) => update('instructions', e.target.value)}
           placeholder={
-            language === 'en'
-              ? 'Allergies, medications, favourite toys, feeding schedule…'
-              : 'Allergies, médicaments, jouets préférés, horaire des repas…'
+            isFr
+              ? 'Allergies, médicaments, jouets préférés, horaire des repas…'
+              : 'Allergies, medications, favourite toys, feeding schedule…'
           }
           className={`${inputClass('instructions')} resize-none`}
         />
@@ -458,7 +655,7 @@ export default function BookingForm() {
             </div>
             <div>
               <p className="text-sm font-medium text-slate-700">
-                {language === 'en' ? 'Photo uploaded!' : 'Photo téléchargée !'}
+                {isFr ? 'Photo téléchargée !' : 'Photo uploaded!'}
               </p>
               <button
                 type="button"
@@ -476,19 +673,19 @@ export default function BookingForm() {
             className="w-full rounded-2xl border-2 border-dashed border-slate-200 px-6 py-6 text-left transition-colors hover:border-brand-300 hover:bg-brand-50/40"
           >
             <p className="text-sm font-semibold text-slate-800">
-              {language === 'en'
-                ? "I'm excited to meet your furry friend! 🐾"
-                : "J'ai hâte de rencontrer votre compagnon ! 🐾"}
+              {isFr
+                ? "J'ai hâte de rencontrer votre compagnon ! 🐾"
+                : "I'm excited to meet your furry friend! 🐾"}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-slate-500">
-              {language === 'en'
-                ? "Please upload a recent photo of your pet (or pets) so I can start getting to know them before our meet & greet. If multiple pets are included in your booking, please upload a photo of each one!"
-                : "Téléchargez une photo récente de votre animal (ou de vos animaux) pour que je puisse commencer à les connaître avant notre rencontre. Si plusieurs animaux sont inclus, n'hésitez pas à en ajouter une pour chacun !"}
+              {isFr
+                ? "Téléchargez une photo récente de votre animal (ou de vos animaux) pour que je puisse commencer à les connaître avant notre rencontre. Si plusieurs animaux sont inclus, n'hésitez pas à en ajouter une pour chacun !"
+                : "Please upload a recent photo of your pet (or pets) so I can start getting to know them before our meet & greet. If multiple pets are included in your booking, please upload a photo of each one!"}
             </p>
             <span className="mt-3 inline-block text-xs font-medium text-brand-600">
-              {language === 'en'
-                ? 'Click to upload · JPG, PNG, WEBP · Max 5 MB'
-                : 'Cliquez pour télécharger · JPG, PNG, WEBP · Max 5 Mo'}
+              {isFr
+                ? 'Cliquez pour télécharger · JPG, PNG, WEBP · Max 5 Mo'
+                : 'Click to upload · JPG, PNG, WEBP · Max 5 MB'}
             </span>
           </button>
         )}
@@ -499,7 +696,7 @@ export default function BookingForm() {
           accept="image/jpeg,image/png,image/webp"
           onChange={handlePhotoChange}
           className="hidden"
-          aria-label={language === 'en' ? 'Upload pet photo' : "Télécharger une photo de l'animal"}
+          aria-label={isFr ? "Télécharger une photo de l'animal" : 'Upload pet photo'}
         />
         {errors.photo && <p className="mt-1 text-xs text-red-600">{errors.photo}</p>}
       </div>

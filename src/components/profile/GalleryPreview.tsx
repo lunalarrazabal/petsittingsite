@@ -18,7 +18,7 @@ export default function GalleryPreview() {
   return (
     <section>
       <div className="flex items-baseline justify-between gap-4">
-        <h2 className="font-[var(--font-playfair)] text-2xl font-bold text-slate-900 sm:text-3xl">
+        <h2 className="font-[var(--font-playfair)] text-xl font-bold text-slate-900 sm:text-2xl">
           {t.gallery.title}
         </h2>
         <Link

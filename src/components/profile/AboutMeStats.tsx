@@ -36,7 +36,7 @@ export default function AboutMeStats() {
 
   return (
     <section>
-      <h2 className="font-[var(--font-playfair)] text-2xl font-bold text-slate-900 sm:text-3xl">
+      <h2 className="font-[var(--font-playfair)] text-xl font-bold text-slate-900 sm:text-2xl">
         {p.aboutHeading}
       </h2>
       <div className="mt-5 grid gap-8 sm:grid-cols-2">

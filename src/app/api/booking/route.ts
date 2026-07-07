@@ -2,14 +2,6 @@ import { NextResponse } from 'next/server';
 import { resend, OWNER_EMAIL, FROM_EMAIL } from '@/lib/email';
 import { services } from '@/data/services';
 
-// Addon display info (matches ADDON_OPTIONS in BookingForm)
-const addonLabels: Record<string, string> = {
-  'additional-dog': 'Additional Dog (+$20/night)',
-  'additional-cat': 'Additional Cat (+$15/night)',
-  'pickup':         'Pick-up Service (+$50)',
-  'dropoff':        'Drop-off Service (+$50)',
-};
-
 export async function POST(request: Request) {
   const formData = await request.formData();
 
@@ -18,19 +10,34 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   }
 
-  const name                  = formData.get('name')                 as string;
-  const email                 = formData.get('email')                as string;
-  const phone                 = formData.get('phone')                as string;
-  const petName               = formData.get('petName')              as string;
-  const petType               = formData.get('petType')              as string;
-  const servicesRaw           = formData.get('services')             as string; // comma-separated IDs
-  const additionalServicesRaw = formData.get('additionalServices')   as string; // comma-separated IDs (optional)
-  const additionalDogName     = formData.get('additionalDogName')    as string;
-  const additionalCatName     = formData.get('additionalCatName')    as string;
-  const checkIn               = formData.get('date')                 as string;
-  const checkOut              = formData.get('endDate')              as string;
-  const instructions          = formData.get('instructions')         as string;
-  const photoFile             = formData.get('photo')                as File | null;
+  const name           = formData.get('name')           as string;
+  const email          = formData.get('email')          as string;
+  const phone          = formData.get('phone')          as string;
+  const petName        = formData.get('petName')        as string;
+  const petType        = formData.get('petType')        as string;
+  const servicesRaw    = formData.get('services')       as string;
+  const checkIn        = formData.get('date')           as string;
+  const checkOut       = formData.get('endDate')        as string;
+  const instructions   = formData.get('instructions')   as string;
+  const photoFile      = formData.get('photo')          as File | null;
+
+  // Additional pets + transportation
+  const additionalDogs     = parseInt(formData.get('additionalDogs')     as string || '0', 10);
+  const additionalCats     = parseInt(formData.get('additionalCats')     as string || '0', 10);
+  const includePickup      = formData.get('includePickup')  === 'true';
+  const includeDropoff     = formData.get('includeDropoff') === 'true';
+  const estimatedTotal     = formData.get('estimatedTotal') as string;
+
+  let additionalDogNames: string[] = [];
+  let additionalCatNames: string[] = [];
+  try {
+    const raw = formData.get('additionalDogNames') as string;
+    if (raw) additionalDogNames = JSON.parse(raw);
+  } catch { /* ignore */ }
+  try {
+    const raw = formData.get('additionalCatNames') as string;
+    if (raw) additionalCatNames = JSON.parse(raw);
+  } catch { /* ignore */ }
 
   // Server-side validation
   if (!name?.trim() || !email?.trim() || !phone?.trim() || !petName?.trim() || !petType || !servicesRaw || !checkIn) {
@@ -42,22 +49,29 @@ export async function POST(request: Request) {
   }
 
   // Resolve primary service IDs → display labels
-  const selectedIds    = servicesRaw.split(',').map((s) => s.trim()).filter(Boolean);
-  const serviceLabels  = selectedIds.map((id) => {
+  const selectedIds   = servicesRaw.split(',').map((s) => s.trim()).filter(Boolean);
+  const serviceLabels = selectedIds.map((id) => {
     const svc = services.find((s) => s.id === id);
     return svc ? `${svc.nameEn} — $${svc.price}/${svc.unit}` : id;
   });
 
-  // Resolve additional service IDs → display labels
-  const addonIds     = additionalServicesRaw
-    ? additionalServicesRaw.split(',').map((s) => s.trim()).filter(Boolean)
-    : [];
-  const addonDisplay = addonIds.map((id) => {
-    let label = addonLabels[id] ?? id;
-    if (id === 'additional-dog' && additionalDogName?.trim()) label += ` — ${additionalDogName.trim()}`;
-    if (id === 'additional-cat' && additionalCatName?.trim()) label += ` — ${additionalCatName.trim()}`;
-    return label;
-  });
+  // Build additional pets display lines
+  const petLines: string[] = [];
+  if (additionalDogs > 0) {
+    const names = additionalDogNames.filter(Boolean);
+    const label = additionalDogs === 1 ? 'Additional Dog' : `Additional Dogs (${additionalDogs})`;
+    petLines.push(names.length > 0 ? `${label}: ${names.join(', ')}` : label);
+  }
+  if (additionalCats > 0) {
+    const names = additionalCatNames.filter(Boolean);
+    const label = additionalCats === 1 ? 'Additional Cat' : `Additional Cats (${additionalCats})`;
+    petLines.push(names.length > 0 ? `${label}: ${names.join(', ')}` : label);
+  }
+
+  // Build transportation display
+  const transportLines: string[] = [];
+  if (includePickup)  transportLines.push('Pick-up Service (+$50)');
+  if (includeDropoff) transportLines.push('Drop-off Service (+$50)');
 
   // Handle optional photo attachment
   type Attachment = { filename: string; content: Buffer };
@@ -99,12 +113,21 @@ export async function POST(request: Request) {
                   </ul>
                 </td>
               </tr>
-              ${addonDisplay.length > 0 ? `
+              ${petLines.length > 0 ? `
               <tr>
-                <td style="padding: 6px 0; color: #6b7280; vertical-align: top;">Additional</td>
+                <td style="padding: 6px 0; color: #6b7280; vertical-align: top;">Additional Pets</td>
                 <td style="color: #111827;">
                   <ul style="margin: 0; padding-left: 18px;">
-                    ${toListHtml(addonDisplay)}
+                    ${toListHtml(petLines)}
+                  </ul>
+                </td>
+              </tr>` : ''}
+              ${transportLines.length > 0 ? `
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280; vertical-align: top;">Transportation</td>
+                <td style="color: #111827;">
+                  <ul style="margin: 0; padding-left: 18px;">
+                    ${toListHtml(transportLines)}
                   </ul>
                 </td>
               </tr>` : ''}
@@ -116,6 +139,11 @@ export async function POST(request: Request) {
               <tr>
                 <td style="padding: 6px 0; color: #6b7280;">Check-out</td>
                 <td style="color: #111827; font-weight: 600;">${checkOut}</td>
+              </tr>` : ''}
+              ${estimatedTotal && estimatedTotal !== '0' ? `
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280;">Estimated Total</td>
+                <td style="color: #065f46; font-weight: 700; font-size: 16px;">$${estimatedTotal}</td>
               </tr>` : ''}
             </table>
 

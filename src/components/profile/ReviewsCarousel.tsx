@@ -24,7 +24,7 @@ export default function ReviewsCarousel() {
     <section>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-[var(--font-playfair)] text-2xl font-bold text-slate-900 sm:text-3xl">
+          <h2 className="font-[var(--font-playfair)] text-xl font-bold text-slate-900 sm:text-2xl">
             {p.reviewsHeading}
           </h2>
           <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-slate-600">
