@@ -73,37 +73,25 @@ export default function DateRangePicker({
   };
 
   return (
-    <div
-      className={`rounded-2xl bg-white p-4 shadow-sm ring-1 ${
-        error ? 'ring-red-300' : 'ring-slate-100'
-      }`}
-    >
-      <h3 className="font-semibold text-slate-900">{b.calendarTitle}</h3>
-      <p className="mt-0.5 text-xs text-slate-400">{b.calendarSubtitle}</p>
+    <div className={`border p-4 sm:p-5 ${error ? 'border-red-300' : 'border-line'} bg-bg`}>
+      <h3 className="font-[var(--font-playfair)] text-lg text-ink">{b.calendarTitle}</h3>
+      <p className="mt-0.5 text-xs text-faint">{b.calendarSubtitle}</p>
 
       {/* Check-in / Check-out summary */}
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <div
-          className={`rounded-xl border-2 px-3 py-2.5 transition-colors ${
-            checkIn ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-slate-50'
-          }`}
-        >
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+        <div className={`border px-3 py-2.5 transition-colors ${checkIn ? 'border-sage-deep bg-brand-50' : 'border-line bg-surface'}`}>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-faint">
             {language === 'en' ? 'Check-in' : 'Arrivée'}
           </p>
-          <p className={`mt-0.5 text-sm font-semibold ${checkIn ? 'text-slate-900' : 'text-slate-400'}`}>
+          <p className={`mt-0.5 text-sm font-semibold ${checkIn ? 'text-ink' : 'text-faint'}`}>
             {checkIn || (language === 'en' ? 'Select date' : 'Choisir')}
           </p>
         </div>
-        <div
-          className={`rounded-xl border-2 px-3 py-2.5 transition-colors ${
-            checkOut ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-slate-50'
-          }`}
-        >
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+        <div className={`border px-3 py-2.5 transition-colors ${checkOut ? 'border-sage-deep bg-brand-50' : 'border-line bg-surface'}`}>
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-faint">
             {language === 'en' ? 'Check-out' : 'Départ'}
           </p>
-          <p className={`mt-0.5 text-sm font-semibold ${checkOut ? 'text-slate-900' : 'text-slate-400'}`}>
+          <p className={`mt-0.5 text-sm font-semibold ${checkOut ? 'text-ink' : 'text-faint'}`}>
             {checkOut || (language === 'en' ? 'Select date' : 'Choisir')}
           </p>
         </div>
@@ -116,18 +104,18 @@ export default function DateRangePicker({
           onClick={prevMonth}
           disabled={!canGoPrev}
           aria-label={b.prevMonth}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-lg leading-none transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-8 w-8 items-center justify-center border border-line text-lg leading-none text-ink transition-colors hover:bg-ink hover:text-surface disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink"
         >
           ‹
         </button>
-        <p className="text-sm font-semibold text-slate-800">
+        <p className="font-[var(--font-playfair)] text-base text-ink">
           {t.months[viewMonth]} {viewYear}
         </p>
         <button
           type="button"
           onClick={nextMonth}
           aria-label={b.nextMonth}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-lg leading-none transition-colors hover:bg-slate-100"
+          className="flex h-8 w-8 items-center justify-center border border-line text-lg leading-none text-ink transition-colors hover:bg-ink hover:text-surface"
         >
           ›
         </button>
@@ -136,7 +124,7 @@ export default function DateRangePicker({
       {/* Day-of-week headers */}
       <div className="mt-3 grid grid-cols-7 text-center">
         {t.days.map((day) => (
-          <div key={day} className="py-1 text-xs font-medium text-slate-400">
+          <div key={day} className="py-1 text-xs font-medium text-faint">
             {day}
           </div>
         ))}
@@ -156,7 +144,6 @@ export default function DateRangePicker({
           const dayNum    = i + 1;
           const date      = new Date(viewYear, viewMonth, dayNum);
           const dateStr   = toDateStr(date);
-          const dayOfWeek = date.getDay();
 
           const isPast    = date < today;
           const isBlocked = blockedDates.includes(dateStr);
@@ -169,27 +156,22 @@ export default function DateRangePicker({
           // Range strip: full-width bg between endpoints
           let wrapperCls = 'flex h-9 items-center justify-center ';
           if (inRange) {
-            wrapperCls += 'bg-blue-50 ';
-            // Round the ends of the strip at week boundaries and at the endpoints
-            if (dayOfWeek === 0 || (isStart)) wrapperCls += 'rounded-l-full ';
-            if (dayOfWeek === 6 || (isEnd))   wrapperCls += 'rounded-r-full ';
+            wrapperCls += 'bg-brand-50 ';
           }
-          if (isStart && checkOut) wrapperCls += 'rounded-l-full ';
-          if (isEnd)               wrapperCls += 'rounded-r-full ';
 
           // Button circle
           let btnCls =
             'relative flex h-9 w-9 items-center justify-center rounded-full text-sm transition-all duration-150 ';
           if (isStart || isEnd) {
-            btnCls += 'bg-blue-600 text-white font-bold shadow-sm z-10 ';
+            btnCls += 'bg-ink text-surface font-bold z-10 ';
           } else if (isDisabled) {
-            btnCls += 'cursor-not-allowed text-slate-300 ';
+            btnCls += 'cursor-not-allowed text-line ';
             if (isBlocked) btnCls += 'bg-red-50 line-through ';
           } else if (isToday) {
             btnCls +=
-              'font-bold text-blue-600 ring-2 ring-blue-300 hover:bg-blue-100 cursor-pointer ';
+              'font-bold text-sage-deep ring-2 ring-sage cursor-pointer hover:bg-brand-50 ';
           } else {
-            btnCls += 'cursor-pointer text-slate-700 hover:bg-blue-100 hover:text-blue-700 ';
+            btnCls += 'cursor-pointer text-ink hover:bg-brand-50 hover:text-sage-deep ';
           }
 
           return (
@@ -210,7 +192,7 @@ export default function DateRangePicker({
               >
                 {dayNum}
                 {isToday && !isStart && !isEnd && (
-                  <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-blue-500" />
+                  <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-sage-deep" />
                 )}
               </button>
             </div>
@@ -219,13 +201,13 @@ export default function DateRangePicker({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-100 pt-3 text-xs text-slate-500">
+      <div className="mt-4 flex flex-wrap gap-3 border-t border-line pt-3 text-xs text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full bg-blue-600" />
+          <span className="h-3 w-3 rounded-full bg-ink" />
           {language === 'en' ? 'Check-in / Check-out' : 'Arrivée / Départ'}
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full bg-blue-100" />
+          <span className="h-3 w-3 rounded-full bg-brand-100" />
           {language === 'en' ? 'Selected stay' : 'Séjour sélectionné'}
         </span>
         <span className="flex items-center gap-1.5">

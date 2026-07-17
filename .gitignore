@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Claude Code settings (may contain tokens)
 .claude/
+
+# Local design mockups/reference exports, not app code
+/design-reference/

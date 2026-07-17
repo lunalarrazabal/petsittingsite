@@ -1,18 +1,34 @@
 @import "tailwindcss";
 
-/* Custom CSS variables for the brand color palette.
-   Brand = soft emerald accent (#118855). Blue = primary actions/buttons. */
+/* Custom CSS variables for the boutique color palette, matching
+   design-reference/Pet Loft Mtl.dc.html: warm cream/ink neutrals with a
+   sage-green + ochre accent. */
 @theme {
-  --color-brand-50: #f0fdf4;
-  --color-brand-100: #dcfce7;
-  --color-brand-200: #bbf7d0;
-  --color-brand-300: #86efac;
-  --color-brand-400: #4ade80;
-  --color-brand-500: #22c55e;
-  --color-brand-600: #118855;
-  --color-brand-700: #0d6b43;
-  --color-brand-800: #0a4f33;
-  --color-brand-900: #073825;
+  --color-ink: #26221d;
+  --color-bg: #ffffff;
+  --color-surface: #fbf9f4;
+  --color-line: #dad2c4;
+  --color-muted: #6b6355;
+  --color-faint: #8a8172;
+  --color-taupe: #b8ac97;
+  --color-sage: #8a9a7b;
+  --color-sage-deep: #5f7355;
+  --color-ochre: #b98a3c;
+
+  /* brand-* scale kept for existing bg-brand and text-brand utilities used
+     across ~26 files — remapped from the old emerald scale to sage tones so
+     those utilities inherit the new palette without touching every file. */
+  --color-brand-50: #f2f4ee;
+  --color-brand-100: #e3e7d9;
+  --color-brand-200: #cbd3bc;
+  --color-brand-300: #aebb9b;
+  --color-brand-400: #97a883;
+  --color-brand-500: #8a9a7b;
+  --color-brand-600: #5f7355;
+  --color-brand-700: #4a5c42;
+  --color-brand-800: #37452f;
+  --color-brand-900: #262f21;
+
   --font-display: var(--font-playfair);
   --font-sans: var(--font-inter);
 }
@@ -22,9 +38,22 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  background: var(--color-bg);
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--color-taupe);
+  color: var(--color-ink);
+}
+
 /* Remove the default focus outline and replace with a branded one */
 :focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--color-sage-deep);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -42,4 +71,131 @@ img {
 }
 .carousel-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* ---------------------------------------------------------------------
+   Boutique design-language utilities, ported from
+   design-reference/Pet Loft Mtl.dc.html
+   --------------------------------------------------------------------- */
+
+/* Small uppercase tracked label, used instead of pill-shaped badges */
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+  font-weight: 500;
+}
+
+/* Animated underline link, used for secondary actions and nav items */
+.btn-underline {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+  padding-bottom: 4px;
+}
+.btn-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transition: transform 0.35s ease;
+  transform-origin: right;
+  transform: scaleX(1);
+}
+.btn-underline:hover::after {
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Sharp-edged solid button that inverts on hover, used for primary actions */
+.btn-solid {
+  background: var(--color-ink);
+  color: var(--color-surface);
+  border: 1px solid var(--color-ink);
+  transition: background 0.3s, color 0.3s;
+}
+.btn-solid:hover {
+  background: transparent;
+  color: var(--color-ink);
+}
+
+/* Underline-style form field, replacing ringed rounded inputs */
+.fld {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-line);
+  padding: 12px 2px;
+  font-size: 16px;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 0.3s;
+}
+.fld:focus {
+  border-color: var(--color-ink);
+}
+.fld::placeholder {
+  color: var(--color-faint);
+}
+
+/* Photo frame: overflow-hidden container with a hover-zoom treatment.
+   Apply to a wrapper around a next/image <img>. */
+.frame {
+  overflow: hidden;
+  position: relative;
+}
+.frame img {
+  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.frame:hover img {
+  transform: scale(1.06);
+}
+
+/* Nav link with an animated underline that stays drawn while the route ("on") is active */
+.navlink {
+  position: relative;
+  padding-bottom: 4px;
+  opacity: 0.6;
+  transition: opacity 0.25s;
+}
+.navlink:hover {
+  opacity: 1;
+}
+.navlink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 0;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+.navlink:hover::after {
+  width: 100%;
+}
+.navlink.on {
+  opacity: 1;
+}
+.navlink.on::after {
+  width: 100%;
+}
+
+/* Scroll-reveal animation, toggled by <Reveal> via IntersectionObserver */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
 }

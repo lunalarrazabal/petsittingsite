@@ -1,29 +1,19 @@
 'use client';
 
-import {
-  Home,
-  Sun,
-  Footprints,
-  Moon,
-  PlusCircle,
-  Car,
-  Star,
-  type LucideIcon,
-} from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { type Service } from '@/types';
 import Button from '@/components/ui/Button';
+import { DogFaceIcon, TerrierIcon, WalkingIcon, CatIcon } from '@/components/icons/PetIcons';
+import type { Translations } from '@/i18n/translations';
 
-function getIcon(id: string): LucideIcon {
+type HomeProfile = Translations['homeProfile'];
+
+function getServiceMeta(id: string): { Icon: typeof DogFaceIcon; locationKey: keyof HomeProfile } {
   switch (id) {
-    case 'dog-daycare':  return Sun;
-    case 'dog-walking':  return Footprints;
-    case 'cat-boarding': return Moon;
-    case 'additional-dog':
-    case 'additional-cat': return PlusCircle;
-    case 'pickup':
-    case 'dropoff':      return Car;
-    default:             return Home;
+    case 'dog-daycare':  return { Icon: TerrierIcon, locationKey: 'doggyDaycareLocation' };
+    case 'dog-walking':  return { Icon: WalkingIcon, locationKey: 'dogWalkingLocation' };
+    case 'cat-boarding': return { Icon: CatIcon,      locationKey: 'boardingLocation' };
+    default:             return { Icon: DogFaceIcon,  locationKey: 'boardingLocation' };
   }
 }
 
@@ -34,82 +24,54 @@ interface PricingCardProps {
 export default function PricingCard({ service }: PricingCardProps) {
   const { t, language } = useLanguage();
   const s = t.services;
-  const Icon = getIcon(service.id);
+  const p = t.homeProfile;
+  const { Icon, locationKey } = getServiceMeta(service.id);
+  const isPopular = !!service.popular;
 
   const name        = language === 'en' ? service.nameEn        : service.nameFr;
   const description = language === 'en' ? service.descriptionEn : service.descriptionFr;
-
-  const isPopular = !!service.popular;
+  const features     = language === 'en' ? service.featuresEn    : service.featuresFr;
 
   return (
     <div
-      className={`relative flex flex-col rounded-2xl p-5 shadow-sm ring-1 transition-shadow duration-200 hover:shadow-md ${
-        isPopular
-          ? 'bg-blue-600 text-white ring-blue-500'
-          : 'bg-white text-slate-900 ring-slate-100'
+      className={`relative flex flex-col border p-7 ${
+        isPopular ? 'border-ochre bg-surface' : 'border-line bg-bg'
       }`}
     >
       {isPopular && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-white px-4 py-1 text-xs font-bold text-blue-600 shadow">
-          <Star className="h-3 w-3 fill-blue-500 text-blue-500" aria-hidden="true" />
+        <span className="absolute -top-3 left-6 bg-bg px-2 text-[11px] font-medium uppercase tracking-[0.14em] text-ochre">
           {s.popular}
         </span>
       )}
 
-      {/* Icon */}
-      <span
-        className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-          isPopular ? 'bg-blue-500' : 'bg-brand-50 text-brand-700'
-        }`}
-        aria-hidden="true"
-      >
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
-      </span>
-
-      {/* Name */}
-      <h3
-        className={`mt-3 font-[var(--font-playfair)] text-lg font-bold ${
-          isPopular ? 'text-white' : 'text-slate-900'
-        }`}
-      >
-        {name}
-      </h3>
-
-      {/* Description */}
-      <p
-        className={`mt-1.5 flex-1 text-sm leading-relaxed ${
-          isPopular ? 'text-blue-100' : 'text-slate-500'
-        }`}
-      >
-        {description}
-      </p>
-
-      {/* Price */}
-      <div className="mt-4">
-        <p
-          className={`text-2xl font-extrabold tracking-tight ${
-            isPopular ? 'text-white' : 'text-brand-600'
-          }`}
-        >
-          ${service.price}
-          <span
-            className={`text-sm font-normal tracking-normal ${
-              isPopular ? 'text-blue-200' : 'text-slate-400'
-            }`}
-          >
-            {' '}/ {service.unit}
-          </span>
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <Icon className="h-10 w-10 text-ink" />
+          <h3 className="mt-4 font-[var(--font-playfair)] text-2xl text-ink">{name}</h3>
+          <p className="eyebrow mt-1">{p[locationKey]}</p>
+        </div>
+        <div className="shrink-0 text-right">
+          <div className="font-[var(--font-playfair)] text-3xl leading-none text-ink">
+            ${service.price}
+          </div>
+          <div className="mt-1 text-xs uppercase tracking-[0.08em] text-faint">
+            {service.unit}
+          </div>
+        </div>
       </div>
 
-      {/* CTA */}
-      <div className="mt-4">
-        <Button
-          href="/booking"
-          variant={isPopular ? 'ghost' : 'outline'}
-          fullWidth
-          className={isPopular ? 'bg-white text-blue-600 hover:bg-blue-50' : ''}
-        >
+      <p className="mt-5 text-sm leading-relaxed text-muted">{description}</p>
+
+      <ul className="mt-5 flex flex-col gap-2.5">
+        {features.map((feature) => (
+          <li key={feature} className="border-t border-line pt-2.5 text-sm text-muted">
+            {feature}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-6">
+        <Button href="/booking" variant="underline">
           {s.bookService}
         </Button>
       </div>

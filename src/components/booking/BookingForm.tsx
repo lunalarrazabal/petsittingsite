@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Check, Minus, Plus } from 'lucide-react';
+import { Check, Minus, Plus, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { services } from '@/data/services';
 import { calculateEstimate } from '@/lib/booking-estimate';
@@ -45,10 +45,10 @@ function QtyButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors ${
+      className={`flex h-8 w-8 items-center justify-center border transition-colors ${
         disabled
-          ? 'cursor-not-allowed border-slate-200 text-slate-300'
-          : 'border-slate-300 text-slate-600 hover:border-brand-500 hover:text-brand-600'
+          ? 'cursor-not-allowed border-line text-line'
+          : 'border-line text-muted hover:border-sage-deep hover:text-sage-deep'
       }`}
     >
       {children}
@@ -173,23 +173,17 @@ export default function BookingForm() {
     }
   };
 
-  const inputClass = (field: keyof FormData) =>
-    `w-full rounded-xl border px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-      errors[field]
-        ? 'border-red-400 bg-red-50'
-        : 'border-slate-200 bg-white hover:border-slate-300'
-    }`;
+  const fieldStyle = (field: keyof FormData) =>
+    errors[field] ? { borderBottomColor: '#dc2626' } : undefined;
 
   if (status === 'success') {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-8 py-14 text-center ring-1 ring-emerald-100">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
-          <Check className="h-8 w-8 text-emerald-600" strokeWidth={2.5} aria-hidden="true" />
-        </span>
-        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-slate-900">
+      <div className="flex flex-col items-center justify-center px-8 py-14 text-center">
+        <CheckCircle2 className="h-12 w-12 text-sage-deep" strokeWidth={1.25} aria-hidden="true" />
+        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl text-ink">
           {b.successTitle}
         </h3>
-        <p className="mt-2 max-w-sm text-slate-500">{b.successText}</p>
+        <p className="mt-2 max-w-sm text-muted">{b.successText}</p>
         <button
           onClick={() => {
             setStatus('idle');
@@ -204,7 +198,7 @@ export default function BookingForm() {
             setPhotoFile(null);
             setPhotoPreview(null);
           }}
-          className="mt-6 text-sm font-medium text-brand-600 hover:underline"
+          className="btn-underline mt-6 text-ink"
         >
           {language === 'en' ? 'Submit another request' : 'Envoyer une autre demande'}
         </button>
@@ -215,7 +209,7 @@ export default function BookingForm() {
   const isFr = language === 'fr';
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form onSubmit={handleSubmit} noValidate className="space-y-6">
       {/* Honeypot */}
       <input
         type="text"
@@ -242,7 +236,7 @@ export default function BookingForm() {
       {/* Name / Email */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="bk-name" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="bk-name" className="eyebrow">
             {b.formName} *
           </label>
           <input
@@ -252,12 +246,13 @@ export default function BookingForm() {
             onChange={(e) => update('name', e.target.value)}
             placeholder="Luna Larrazabal"
             autoComplete="name"
-            className={inputClass('name')}
+            style={fieldStyle('name')}
+            className="fld mt-2"
           />
           {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
         </div>
         <div>
-          <label htmlFor="bk-email" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="bk-email" className="eyebrow">
             {b.formEmail} *
           </label>
           <input
@@ -267,7 +262,8 @@ export default function BookingForm() {
             onChange={(e) => update('email', e.target.value)}
             placeholder="you@email.com"
             autoComplete="email"
-            className={inputClass('email')}
+            style={fieldStyle('email')}
+            className="fld mt-2"
           />
           {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
         </div>
@@ -275,7 +271,7 @@ export default function BookingForm() {
 
       {/* Phone */}
       <div>
-        <label htmlFor="bk-phone" className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="bk-phone" className="eyebrow">
           {b.formPhone} *
         </label>
         <input
@@ -285,7 +281,8 @@ export default function BookingForm() {
           onChange={(e) => update('phone', e.target.value)}
           placeholder="+1 (514) 000-0000"
           autoComplete="tel"
-          className={inputClass('phone')}
+          style={fieldStyle('phone')}
+          className="fld mt-2"
         />
         {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
       </div>
@@ -293,7 +290,7 @@ export default function BookingForm() {
       {/* Pet name / Pet type */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="bk-pet-name" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="bk-pet-name" className="eyebrow">
             {b.formPetName} *
           </label>
           <input
@@ -302,19 +299,21 @@ export default function BookingForm() {
             value={form.petName}
             onChange={(e) => update('petName', e.target.value)}
             placeholder="Buddy"
-            className={inputClass('petName')}
+            style={fieldStyle('petName')}
+            className="fld mt-2"
           />
           {errors.petName && <p className="mt-1 text-xs text-red-600">{errors.petName}</p>}
         </div>
         <div>
-          <label htmlFor="bk-pet-type" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="bk-pet-type" className="eyebrow">
             {b.formPetType} *
           </label>
           <select
             id="bk-pet-type"
             value={form.petType}
             onChange={(e) => update('petType', e.target.value)}
-            className={inputClass('petType')}
+            style={fieldStyle('petType')}
+            className="fld mt-2"
           >
             <option value="">{b.selectPetType}</option>
             {b.petTypes.map((pt) => (
@@ -327,22 +326,18 @@ export default function BookingForm() {
 
       {/* ── Main service multi-select ─────────────────────────────────────── */}
       <div>
-        <p className="mb-2 text-sm font-medium text-slate-700">
+        <p className="eyebrow mb-2">
           {b.formService}{' '}
-          <span className="font-normal text-slate-400">
+          <span className="normal-case tracking-normal text-faint">
             {isFr ? "(sélectionner tout ce qui s'applique)" : '(select all that apply)'} *
           </span>
         </p>
 
-        <div
-          className={`overflow-hidden rounded-2xl border ${
-            errors.services ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'
-          }`}
-        >
+        <div className={`border ${errors.services ? 'border-red-400' : 'border-line'} bg-bg`}>
           {SERVICE_GROUPS.map((group, gi) => (
-            <div key={group.key} className={gi > 0 ? 'border-t border-slate-100' : ''}>
-              <div className="bg-slate-50 px-4 py-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            <div key={group.key} className={gi > 0 ? 'border-t border-line' : ''}>
+              <div className="bg-surface px-4 py-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-faint">
                   {isFr ? group.labelFr : group.labelEn}
                 </p>
               </div>
@@ -354,16 +349,16 @@ export default function BookingForm() {
                   <label
                     key={svc.id}
                     className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${
-                      checked ? 'bg-brand-50' : 'hover:bg-slate-50'
-                    } ${!isLast ? 'border-b border-slate-100' : ''}`}
+                      checked ? 'bg-brand-50' : 'hover:bg-surface'
+                    } ${!isLast ? 'border-b border-line' : ''}`}
                   >
                     <span
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                        checked ? 'border-brand-600 bg-brand-600' : 'border-slate-300 bg-white'
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center border-2 transition-colors ${
+                        checked ? 'border-ink bg-ink' : 'border-line bg-bg'
                       }`}
                       aria-hidden="true"
                     >
-                      {checked && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+                      {checked && <Check className="h-3 w-3 text-surface" strokeWidth={3} />}
                     </span>
                     <input
                       type="checkbox"
@@ -372,10 +367,10 @@ export default function BookingForm() {
                       onChange={() => toggleService(svc.id)}
                       value={svc.id}
                     />
-                    <span className="flex-1 text-sm text-slate-700">{name}</span>
-                    <span className="shrink-0 text-sm font-semibold text-slate-900">
+                    <span className="flex-1 text-sm text-ink">{name}</span>
+                    <span className="shrink-0 text-sm font-semibold text-ink">
                       ${svc.price}
-                      <span className="ml-0.5 text-xs font-normal text-slate-400">/{svc.unit}</span>
+                      <span className="ml-0.5 text-xs font-normal text-faint">/{svc.unit}</span>
                     </span>
                   </label>
                 );
@@ -390,16 +385,16 @@ export default function BookingForm() {
 
       {/* ── Additional Services ───────────────────────────────────────────── */}
       <div>
-        <p className="mb-1 text-sm font-medium text-slate-700">
+        <p className="eyebrow mb-1">
           {isFr ? 'Animaux et services supplémentaires' : 'Additional Pets & Services'}
-          <span className="ml-1.5 text-xs font-normal text-slate-400">
+          <span className="ml-1.5 normal-case tracking-normal text-faint">
             {isFr ? '(facultatif)' : '(optional)'}
           </span>
         </p>
 
         {/* Explanation */}
-        <div className="mb-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-          <p className="text-xs leading-relaxed text-slate-500">
+        <div className="mb-3 border border-line bg-surface px-4 py-3">
+          <p className="text-xs leading-relaxed text-muted">
             {isFr
               ? `Le tarif de base couvre votre animal principal. Ajoutez des animaux supplémentaires ci-dessous si vous en avez plus d'un.`
               : `The base rate covers your primary pet. Add below if you're bringing more than one.`}
@@ -417,24 +412,24 @@ export default function BookingForm() {
                   '2 cats → Book Cat Boarding + add 1 Additional Cat',
                 ]
             ).map((ex, i) => (
-              <li key={i} className="flex items-start gap-1.5 text-xs text-slate-400">
-                <span className="mt-0.5 shrink-0 text-slate-300">›</span>
+              <li key={i} className="flex items-start gap-1.5 text-xs text-faint">
+                <span className="mt-0.5 shrink-0 text-line">›</span>
                 {ex}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        <div className="border border-line bg-bg">
 
           {/* ── Additional Dogs stepper ──────────────────────────────────── */}
-          <div className="border-b border-slate-100">
+          <div className="border-b border-line">
             <div className="flex items-center gap-3 px-4 py-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-slate-700">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-ink">
                   {isFr ? 'Chien supplémentaire' : 'Additional Dog'}
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-faint">
                   {isFr ? '+20 $/nuit par chien' : '+$20/night per dog'}
                 </p>
               </div>
@@ -445,7 +440,7 @@ export default function BookingForm() {
                 >
                   <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </QtyButton>
-                <span className="w-5 text-center text-sm font-semibold text-slate-800">
+                <span className="w-5 text-center text-sm font-semibold text-ink">
                   {additionalDogs}
                 </span>
                 <QtyButton onClick={() => updateDogQty(1)}>
@@ -460,12 +455,12 @@ export default function BookingForm() {
                 additionalDogs > 0 ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
               }`}
             >
-              <div className="border-t border-slate-100 bg-slate-50 px-4 pb-4 pt-3 space-y-3">
+              <div className="space-y-3 border-t border-line bg-surface px-4 pb-4 pt-3">
                 {Array.from({ length: additionalDogs }).map((_, idx) => (
                   <div key={idx}>
                     <label
                       htmlFor={`dog-name-${idx}`}
-                      className="mb-1.5 block text-xs font-medium text-slate-500"
+                      className="mb-1.5 block text-xs font-medium text-muted"
                     >
                       {isFr ? `Nom du chien supplémentaire #${idx + 1}` : `Additional Dog #${idx + 1} Name`}
                     </label>
@@ -481,7 +476,7 @@ export default function BookingForm() {
                         })
                       }
                       placeholder={isFr ? "Nom de l'animal" : 'Pet name'}
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 transition hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="fld"
                     />
                   </div>
                 ))}
@@ -490,13 +485,13 @@ export default function BookingForm() {
           </div>
 
           {/* ── Additional Cats stepper ──────────────────────────────────── */}
-          <div className="border-b border-slate-100">
+          <div className="border-b border-line">
             <div className="flex items-center gap-3 px-4 py-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-slate-700">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-ink">
                   {isFr ? 'Chat supplémentaire' : 'Additional Cat'}
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-faint">
                   {isFr ? '+15 $/nuit par chat' : '+$15/night per cat'}
                 </p>
               </div>
@@ -507,7 +502,7 @@ export default function BookingForm() {
                 >
                   <Minus className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </QtyButton>
-                <span className="w-5 text-center text-sm font-semibold text-slate-800">
+                <span className="w-5 text-center text-sm font-semibold text-ink">
                   {additionalCats}
                 </span>
                 <QtyButton onClick={() => updateCatQty(1)}>
@@ -522,12 +517,12 @@ export default function BookingForm() {
                 additionalCats > 0 ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
               }`}
             >
-              <div className="border-t border-slate-100 bg-slate-50 px-4 pb-4 pt-3 space-y-3">
+              <div className="space-y-3 border-t border-line bg-surface px-4 pb-4 pt-3">
                 {Array.from({ length: additionalCats }).map((_, idx) => (
                   <div key={idx}>
                     <label
                       htmlFor={`cat-name-${idx}`}
-                      className="mb-1.5 block text-xs font-medium text-slate-500"
+                      className="mb-1.5 block text-xs font-medium text-muted"
                     >
                       {isFr ? `Nom du chat supplémentaire #${idx + 1}` : `Additional Cat #${idx + 1} Name`}
                     </label>
@@ -543,7 +538,7 @@ export default function BookingForm() {
                         })
                       }
                       placeholder={isFr ? "Nom de l'animal" : 'Pet name'}
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 transition hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="fld"
                     />
                   </div>
                 ))}
@@ -552,14 +547,14 @@ export default function BookingForm() {
           </div>
 
           {/* ── Pick-up ──────────────────────────────────────────────────── */}
-          <label className={`flex cursor-pointer items-center gap-3 border-b border-slate-100 px-4 py-3 transition-colors ${includePickup ? 'bg-slate-50' : 'hover:bg-slate-50'}`}>
+          <label className={`flex cursor-pointer items-center gap-3 border-b border-line px-4 py-3 transition-colors ${includePickup ? 'bg-surface' : 'hover:bg-surface'}`}>
             <span
-              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                includePickup ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
+              className={`flex h-5 w-5 shrink-0 items-center justify-center border-2 transition-colors ${
+                includePickup ? 'border-ink bg-ink' : 'border-line bg-bg'
               }`}
               aria-hidden="true"
             >
-              {includePickup && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+              {includePickup && <Check className="h-3 w-3 text-surface" strokeWidth={3} />}
             </span>
             <input
               type="checkbox"
@@ -567,26 +562,26 @@ export default function BookingForm() {
               checked={includePickup}
               onChange={() => setIncludePickup((v) => !v)}
             />
-            <span className="flex-1 text-sm text-slate-700">
+            <span className="flex-1 text-sm text-ink">
               {isFr ? 'Service de ramassage' : 'Pick-up Service'}
             </span>
-            <span className="shrink-0 text-sm font-semibold text-slate-900">
+            <span className="shrink-0 text-sm font-semibold text-ink">
               +$50
-              <span className="ml-0.5 text-xs font-normal text-slate-400">
+              <span className="ml-0.5 text-xs font-normal text-faint">
                 /{isFr ? 'trajet' : 'one way'}
               </span>
             </span>
           </label>
 
           {/* ── Drop-off ─────────────────────────────────────────────────── */}
-          <label className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${includeDropoff ? 'bg-slate-50' : 'hover:bg-slate-50'}`}>
+          <label className={`flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors ${includeDropoff ? 'bg-surface' : 'hover:bg-surface'}`}>
             <span
-              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                includeDropoff ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
+              className={`flex h-5 w-5 shrink-0 items-center justify-center border-2 transition-colors ${
+                includeDropoff ? 'border-ink bg-ink' : 'border-line bg-bg'
               }`}
               aria-hidden="true"
             >
-              {includeDropoff && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+              {includeDropoff && <Check className="h-3 w-3 text-surface" strokeWidth={3} />}
             </span>
             <input
               type="checkbox"
@@ -594,12 +589,12 @@ export default function BookingForm() {
               checked={includeDropoff}
               onChange={() => setIncludeDropoff((v) => !v)}
             />
-            <span className="flex-1 text-sm text-slate-700">
+            <span className="flex-1 text-sm text-ink">
               {isFr ? 'Service de livraison' : 'Drop-off Service'}
             </span>
-            <span className="shrink-0 text-sm font-semibold text-slate-900">
+            <span className="shrink-0 text-sm font-semibold text-ink">
               +$50
-              <span className="ml-0.5 text-xs font-normal text-slate-400">
+              <span className="ml-0.5 text-xs font-normal text-faint">
                 /{isFr ? 'trajet' : 'one way'}
               </span>
             </span>
@@ -625,7 +620,7 @@ export default function BookingForm() {
 
       {/* Special instructions */}
       <div>
-        <label htmlFor="bk-instructions" className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="bk-instructions" className="eyebrow">
           {b.formInstructions}
         </label>
         <textarea
@@ -638,29 +633,29 @@ export default function BookingForm() {
               ? 'Allergies, médicaments, jouets préférés, horaire des repas…'
               : 'Allergies, medications, favourite toys, feeding schedule…'
           }
-          className={`${inputClass('instructions')} resize-none`}
+          className="fld mt-2 resize-none"
         />
       </div>
 
       {/* ── Pet photo upload ──────────────────────────────────────────────── */}
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label className="eyebrow mb-2 block">
           {b.formPhoto}
         </label>
 
         {photoPreview ? (
           <div className="flex items-center gap-4">
-            <div className="relative h-16 w-16 overflow-hidden rounded-xl">
+            <div className="frame relative h-16 w-16">
               <Image src={photoPreview} alt="Pet photo preview" fill className="object-cover" />
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-700">
+              <p className="text-sm font-medium text-ink">
                 {isFr ? 'Photo téléchargée !' : 'Photo uploaded!'}
               </p>
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-0.5 text-sm font-medium text-brand-600 hover:underline"
+                className="btn-underline mt-0.5 text-ink"
               >
                 {b.formPhotoChange}
               </button>
@@ -670,19 +665,19 @@ export default function BookingForm() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="w-full rounded-2xl border-2 border-dashed border-slate-200 px-6 py-6 text-left transition-colors hover:border-brand-300 hover:bg-brand-50/40"
+            className="w-full border border-dashed border-line px-6 py-6 text-left transition-colors hover:border-sage-deep hover:bg-brand-50/40"
           >
-            <p className="text-sm font-semibold text-slate-800">
+            <p className="text-sm font-semibold text-ink">
               {isFr
                 ? "J'ai hâte de rencontrer votre compagnon ! 🐾"
                 : "I'm excited to meet your furry friend! 🐾"}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            <p className="mt-2 text-sm leading-relaxed text-muted">
               {isFr
                 ? "Téléchargez une photo récente de votre animal (ou de vos animaux) pour que je puisse commencer à les connaître avant notre rencontre. Si plusieurs animaux sont inclus, n'hésitez pas à en ajouter une pour chacun !"
                 : "Please upload a recent photo of your pet (or pets) so I can start getting to know them before our meet & greet. If multiple pets are included in your booking, please upload a photo of each one!"}
             </p>
-            <span className="mt-3 inline-block text-xs font-medium text-brand-600">
+            <span className="mt-3 inline-block text-xs font-medium text-sage-deep">
               {isFr
                 ? 'Cliquez pour télécharger · JPG, PNG, WEBP · Max 5 Mo'
                 : 'Click to upload · JPG, PNG, WEBP · Max 5 MB'}
@@ -702,7 +697,7 @@ export default function BookingForm() {
       </div>
 
       {status === 'error' && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {b.errorText}
         </p>
       )}

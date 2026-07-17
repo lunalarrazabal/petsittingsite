@@ -17,7 +17,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Add a shadow to the navbar once the user scrolls down 10px
+  // Add a subtle shadow to the navbar once the user scrolls down 10px
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -46,30 +46,32 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white transition-shadow duration-200 ${
-        scrolled ? 'shadow-md' : 'border-b border-slate-100'
+      className={`sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md transition-shadow duration-200 ${
+        scrolled ? 'shadow-sm' : ''
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         {/* Logo / Business Name */}
-        <Link href="/" className="flex items-center gap-2 text-slate-900">
-          <span className="text-2xl" aria-hidden="true">🐾</span>
-          <span className="font-[var(--font-playfair)] text-lg font-bold leading-tight">
-            Montreal<br className="hidden" />
-            <span className="text-brand-600"> Pet Care</span>
+        <Link
+          href="/"
+          className="flex items-baseline gap-2 text-ink"
+        >
+          <span className="font-[var(--font-playfair)] text-2xl italic font-semibold tracking-tight">
+            Montreal
+          </span>
+          <span className="text-xs font-medium uppercase tracking-[0.16em] text-sage-deep">
+            Pet Care
           </span>
         </Link>
 
         {/* Desktop navigation links — hidden on small screens */}
-        <ul className="hidden items-center gap-6 md:flex">
+        <ul className="hidden items-center gap-8 md:flex">
           {links.map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
-                className={`text-sm font-medium transition-colors ${
-                  isActive(href)
-                    ? 'text-brand-600'
-                    : 'text-slate-600 hover:text-slate-900'
+                className={`navlink text-xs font-medium uppercase tracking-[0.12em] text-ink ${
+                  isActive(href) ? 'on' : ''
                 }`}
               >
                 {label}
@@ -79,11 +81,11 @@ export default function Navbar() {
         </ul>
 
         {/* Right side: language toggle + CTA button */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
           {/* EN / FR language toggle */}
           <button
             onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')}
-            className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition-colors hover:border-brand-300 hover:text-brand-600"
+            className="text-xs font-medium uppercase tracking-[0.12em] text-ink opacity-55 transition-opacity hover:opacity-100"
             aria-label={`Switch to ${language === 'en' ? 'French' : 'English'}`}
           >
             {language === 'en' ? 'FR' : 'EN'}
@@ -92,7 +94,7 @@ export default function Navbar() {
           {/* Book Now button — desktop only */}
           <Link
             href="/booking"
-            className="hidden rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-800 md:block"
+            className="btn-underline hidden text-ink md:inline-block"
           >
             {t.nav.bookNow}
           </Link>
@@ -100,22 +102,22 @@ export default function Navbar() {
           {/* Hamburger button — mobile only */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-md md:hidden"
+            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
           >
             <span
-              className={`block h-0.5 w-5 bg-slate-700 transition-transform duration-200 ${
+              className={`block h-px w-5 bg-ink transition-transform duration-200 ${
                 menuOpen ? 'translate-y-2 rotate-45' : ''
               }`}
             />
             <span
-              className={`block h-0.5 w-5 bg-slate-700 transition-opacity duration-200 ${
+              className={`block h-px w-5 bg-ink transition-opacity duration-200 ${
                 menuOpen ? 'opacity-0' : ''
               }`}
             />
             <span
-              className={`block h-0.5 w-5 bg-slate-700 transition-transform duration-200 ${
+              className={`block h-px w-5 bg-ink transition-transform duration-200 ${
                 menuOpen ? '-translate-y-2 -rotate-45' : ''
               }`}
             />
@@ -125,16 +127,16 @@ export default function Navbar() {
 
       {/* Mobile dropdown menu */}
       {menuOpen && (
-        <div className="border-t border-slate-100 bg-white md:hidden">
-          <ul className="flex flex-col divide-y divide-slate-100">
+        <div className="border-t border-line bg-surface md:hidden">
+          <ul className="flex flex-col divide-y divide-line">
             {links.map(({ href, label }) => (
               <li key={href}>
                 <Link
                   href={href}
-                  className={`block px-6 py-3.5 text-sm font-medium transition-colors ${
+                  className={`block px-6 py-3.5 text-xs font-medium uppercase tracking-[0.12em] transition-colors ${
                     isActive(href)
-                      ? 'text-brand-600 bg-brand-50'
-                      : 'text-slate-700 hover:bg-slate-50'
+                      ? 'bg-brand-50 text-sage-deep'
+                      : 'text-ink hover:bg-brand-50/50'
                   }`}
                 >
                   {label}
@@ -144,7 +146,7 @@ export default function Navbar() {
             <li>
               <Link
                 href="/booking"
-                className="block bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white hover:bg-blue-800"
+                className="btn-solid block px-6 py-3.5 text-center text-xs font-medium uppercase tracking-[0.12em]"
               >
                 {t.nav.bookNow}
               </Link>

@@ -184,6 +184,7 @@ export const translations = {
     ],
     homeProfile: {
       name: 'Luna L.',
+      greeting: "Hi, I'm your host Luna",
       location: 'Montreal, QC',
       ratingSummary: '5.0 · 87 reviews',
       statusText:
@@ -440,6 +441,7 @@ export const translations = {
     ],
     homeProfile: {
       name: 'Luna L.',
+      greeting: 'Bonjour, je suis votre gardienne Luna',
       location: 'Montréal, QC',
       ratingSummary: '5,0 · 87 avis',
       statusText:

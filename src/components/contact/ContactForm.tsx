@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
 import Button from '@/components/ui/Button';
 
@@ -62,27 +63,21 @@ export default function ContactForm() {
     }
   };
 
-  const inputClass = (field: keyof FormData) =>
-    `w-full rounded-xl border px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-      errors[field]
-        ? 'border-red-400 bg-red-50'
-        : 'border-slate-200 bg-white hover:border-slate-300'
-    }`;
+  const fieldStyle = (field: keyof FormData) =>
+    errors[field] ? { borderBottomColor: '#dc2626' } : undefined;
 
   if (status === 'success') {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-8 py-12 text-center ring-1 ring-emerald-100">
-        <span className="text-5xl" aria-hidden="true">✅</span>
-        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl font-bold text-slate-900">
-          {c.successTitle}
-        </h3>
-        <p className="mt-2 text-slate-500">{c.successText}</p>
+      <div className="flex flex-col items-center justify-center px-8 py-12 text-center">
+        <CheckCircle2 className="h-12 w-12 text-sage-deep" strokeWidth={1.25} aria-hidden="true" />
+        <h3 className="mt-4 font-[var(--font-playfair)] text-2xl text-ink">{c.successTitle}</h3>
+        <p className="mt-2 text-muted">{c.successText}</p>
         <button
           onClick={() => {
             setStatus('idle');
             setForm({ name: '', email: '', phone: '', message: '', honeypot: '' });
           }}
-          className="mt-6 text-sm font-medium text-brand-600 hover:underline"
+          className="btn-underline mt-6 text-ink"
         >
           Send another message
         </button>
@@ -91,7 +86,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-6">
       {/* Honeypot — hidden from real users, bots fill it in */}
       <input
         type="text"
@@ -105,7 +100,7 @@ export default function ContactForm() {
       />
 
       <div>
-        <label htmlFor="contact-name" className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="contact-name" className="eyebrow">
           {c.formName} *
         </label>
         <input
@@ -115,13 +110,14 @@ export default function ContactForm() {
           onChange={(e) => update('name', e.target.value)}
           placeholder="Your name"
           autoComplete="name"
-          className={inputClass('name')}
+          style={fieldStyle('name')}
+          className="fld mt-2"
         />
         {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
       </div>
 
       <div>
-        <label htmlFor="contact-email" className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="contact-email" className="eyebrow">
           {c.formEmail} *
         </label>
         <input
@@ -131,13 +127,14 @@ export default function ContactForm() {
           onChange={(e) => update('email', e.target.value)}
           placeholder="you@email.com"
           autoComplete="email"
-          className={inputClass('email')}
+          style={fieldStyle('email')}
+          className="fld mt-2"
         />
         {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
       </div>
 
       <div>
-        <label htmlFor="contact-phone" className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="contact-phone" className="eyebrow">
           {c.formPhone}
         </label>
         <input
@@ -147,37 +144,33 @@ export default function ContactForm() {
           onChange={(e) => update('phone', e.target.value)}
           placeholder="+1 (514) 000-0000"
           autoComplete="tel"
-          className={inputClass('phone')}
+          className="fld mt-2"
         />
       </div>
 
       <div>
-        <label htmlFor="contact-message" className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="contact-message" className="eyebrow">
           {c.formMessage} *
         </label>
         <textarea
           id="contact-message"
-          rows={5}
+          rows={4}
           value={form.message}
           onChange={(e) => update('message', e.target.value)}
           placeholder="Tell me about your pet and what you need…"
-          className={`${inputClass('message')} resize-none`}
+          style={fieldStyle('message')}
+          className="fld mt-2 resize-none"
         />
         {errors.message && <p className="mt-1 text-xs text-red-600">{errors.message}</p>}
       </div>
 
       {status === 'error' && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {c.errorText}
         </p>
       )}
 
-      <Button
-        type="submit"
-        size="lg"
-        fullWidth
-        disabled={status === 'loading'}
-      >
+      <Button type="submit" size="lg" fullWidth disabled={status === 'loading'}>
         {status === 'loading' ? c.sending : c.formSubmit}
       </Button>
     </form>

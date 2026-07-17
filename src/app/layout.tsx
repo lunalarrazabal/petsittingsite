@@ -2,23 +2,27 @@
 // Whatever is here — Navbar, Footer, fonts — appears on ALL pages.
 
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Jost, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
-// Inter is a clean, modern sans-serif font for body text.
-const inter = Inter({
+// Jost is a clean geometric sans-serif used for body text and UI chrome.
+// Kept under the `--font-inter` variable name so every existing
+// `font-[var(--font-inter)]` reference picks it up automatically.
+const inter = Jost({
   variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
 });
 
-// Playfair Display is an elegant serif font used for headings.
-const playfair = Playfair_Display({
+// Cormorant Garamond is the editorial serif used for headings and quotes.
+// Kept under the `--font-playfair` variable name for the same reason.
+const playfair = Cormorant_Garamond({
   variable: '--font-playfair',
   subsets: ['latin'],
+  style: ['normal', 'italic'],
   display: 'swap',
 });
 
@@ -68,7 +72,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="min-h-screen flex flex-col bg-slate-50 font-[var(--font-inter)] antialiased">
+      <body className="min-h-screen flex flex-col bg-[var(--color-bg)] font-[var(--font-inter)] antialiased">
         {/* Providers gives every component access to the language switcher */}
         <Providers>
           <Navbar />

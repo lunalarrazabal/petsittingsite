@@ -74,7 +74,7 @@ function Lightbox({
           width={photo.width}
           height={photo.height}
           sizes="(min-width: 1024px) 60vw, 90vw"
-          className="mx-auto max-h-[85vh] w-auto rounded-2xl object-contain"
+          className="mx-auto max-h-[85vh] w-auto object-contain"
           priority
         />
       </div>
@@ -116,7 +116,7 @@ export default function PhotoGrid() {
             <button
               key={photo.id}
               onClick={() => setActiveIndex(index)}
-              className="group mb-2 block w-full overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-100 transition-shadow duration-200 hover:shadow-md focus-visible:outline-blue-500"
+              className="frame mb-2 block w-full border border-line"
               aria-label={`View larger: ${alt}`}
             >
               <Image
@@ -125,7 +125,7 @@ export default function PhotoGrid() {
                 width={photo.width}
                 height={photo.height}
                 sizes={GRID_SIZES}
-                className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="h-auto w-full object-cover"
               />
             </button>
           );

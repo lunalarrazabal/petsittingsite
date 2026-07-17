@@ -36,31 +36,33 @@ export default function AboutMeStats() {
 
   return (
     <section>
-      <h2 className="font-[var(--font-playfair)] text-xl font-bold text-slate-900 sm:text-2xl">
+      <h2 className="font-[var(--font-playfair)] text-2xl font-medium text-ink sm:text-3xl">
         {p.aboutHeading}
       </h2>
-      <div className="mt-5 grid gap-8 sm:grid-cols-2">
+      <div className="mt-8 grid gap-10 sm:grid-cols-2">
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
-            {p.communicationHeading}
-          </h3>
-          <ul className="mt-3 space-y-3">
+          <h3 className="eyebrow">{p.communicationHeading}</h3>
+          <ul className="mt-4 flex flex-col gap-3">
             {communication.map(({ Icon, text }) => (
-              <li key={text} className="flex items-start gap-3 text-sm text-slate-600">
-                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
+              <li
+                key={text}
+                className="flex items-start gap-3 border-t border-line pt-3 text-sm text-muted"
+              >
+                <Icon className="mt-0.5 h-4 w-4 shrink-0 text-sage-deep" aria-hidden="true" />
                 {text}
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
-            {p.skillsHeading}
-          </h3>
-          <ul className="mt-3 space-y-3">
+          <h3 className="eyebrow">{p.skillsHeading}</h3>
+          <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {skills.map(({ Icon, text }) => (
-              <li key={text} className="flex items-start gap-3 text-sm text-slate-600">
-                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
+              <li
+                key={text}
+                className="flex items-start gap-3 border-t border-line pt-3 text-sm text-muted"
+              >
+                <Icon className="mt-0.5 h-4 w-4 shrink-0 text-sage-deep" aria-hidden="true" />
                 {text}
               </li>
             ))}
